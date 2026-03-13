@@ -206,61 +206,76 @@ window.addEventListener('scroll', () => {
 
 
 // ══ HERO URGENCY + OFFER POPUP ══
-(function(){
+(() => {
   const liveCount = document.getElementById('liveViewerCount');
   const recentText = document.getElementById('heroRecentText');
   const slotCount = document.getElementById('slotCount');
+  if(!liveCount && !recentText && !slotCount) return;
+
+  const recentItems = [
+    'Una clínica en Lima solicitó una demo hace 2 min',
+    'Un negocio de servicios pidió automatizar respuestas hace 4 min',
+    'Una tienda online consultó por seguimiento de leads hace 6 min',
+    'Una empresa local pidió configurar citas por WhatsApp hace 9 min'
+  ];
+
+  let viewers = parseInt(liveCount?.textContent || '14', 10) || 14;
+  let slots = parseInt(slotCount?.textContent || '4', 10) || 4;
+  let recentIndex = 0;
+
+  setInterval(() => {
+    if(liveCount){
+      viewers += Math.random() > 0.5 ? 1 : -1;
+      viewers = Math.max(11, Math.min(19, viewers));
+      liveCount.textContent = viewers;
+    }
+
+    if(recentText){
+      recentIndex = (recentIndex + 1) % recentItems.length;
+      recentText.textContent = recentItems[recentIndex];
+    }
+
+    if(slotCount && Math.random() > 0.72 && slots > 3){
+      slots -= 1;
+      slotCount.textContent = slots;
+    }
+  }, 5200);
+})();
+
+(() => {
   const offerOverlay = document.getElementById('gcai-offer-overlay');
   const offerCountdown = document.getElementById('gcaiOfferCountdown');
   const offerSlots = document.getElementById('gcaiOfferSlots');
-  const feedItems = Array.from(document.querySelectorAll('.gcai-offer-feed-item'));
-  if(!liveCount || !recentText || !slotCount || !offerOverlay || !offerCountdown || !offerSlots) return;
+  if(!offerOverlay || !offerCountdown || !offerSlots) return;
 
-  const recentMessages = [
-    'Nueva demo solicitada por una clínica en Lima hace 2 min',
-    'Un e-commerce pidió automatización de catálogo hace 4 min',
-    'Un negocio de servicios quiere filtrar leads por WhatsApp ahora',
-    'Una empresa local revisó planes y pidió implementación rápida',
-  ];
-
-  let msgIndex = 0;
-  let viewers = parseInt(liveCount.textContent, 10) || 14;
-  let slots = parseInt(slotCount.textContent, 10) || 4;
-
-  function rotateHeroProof(){
-    viewers += Math.random() > 0.5 ? 1 : -1;
-    viewers = Math.max(11, Math.min(19, viewers));
-    liveCount.textContent = viewers;
-    msgIndex = (msgIndex + 1) % recentMessages.length;
-    recentText.textContent = recentMessages[msgIndex];
-  }
-
-  setInterval(rotateHeroProof, 4200);
-
-  const FEED_ROTATE_MS = 2400;
-  let activeFeed = 0;
-  if(feedItems.length){
-    setInterval(()=>{
-      feedItems[activeFeed].classList.remove('is-active');
-      activeFeed = (activeFeed + 1) % feedItems.length;
-      feedItems[activeFeed].classList.add('is-active');
-    }, FEED_ROTATE_MS);
-  }
-
-  const SESSION_KEY = 'gcai-offer-shown';
-  let offerSeconds = 9 * 60 + 59;
+  const feedItems = Array.from(document.querySelectorAll('#gcaiOfferFeed .gcai-offer-feed-item'));
+  const SESSION_KEY = 'gcai-offer-seen';
+  let offerSeconds = 10 * 60;
   let offerTimer = null;
+  let slots = parseInt(offerSlots.textContent, 10) || 4;
+  let feedIndex = 0;
+  let storageBlocked = false;
+
+  function hasSeenOffer(){
+    try { return sessionStorage.getItem(SESSION_KEY) === '1'; }
+    catch (e) { storageBlocked = true; return false; }
+  }
+
+  function markSeenOffer(){
+    if(storageBlocked) return;
+    try { sessionStorage.setItem(SESSION_KEY, '1'); } catch (e) { storageBlocked = true; }
+  }
 
   function renderOfferCountdown(){
-    const mins = Math.floor(offerSeconds / 60).toString().padStart(2, '0');
-    const secs = (offerSeconds % 60).toString().padStart(2, '0');
+    const mins = String(Math.floor(offerSeconds / 60)).padStart(2, '0');
+    const secs = String(offerSeconds % 60).padStart(2, '0');
     offerCountdown.textContent = `${mins}:${secs}`;
   }
 
   function startOfferCountdown(){
     if(offerTimer) return;
     renderOfferCountdown();
-    offerTimer = setInterval(()=>{
+    offerTimer = setInterval(() => {
       if(offerSeconds <= 0){
         clearInterval(offerTimer);
         offerTimer = null;
@@ -270,11 +285,19 @@ window.addEventListener('scroll', () => {
       offerSeconds -= 1;
       if(offerSeconds % 90 === 0 && slots > 2){
         slots -= 1;
-        slotCount.textContent = slots;
         offerSlots.textContent = slots;
       }
       renderOfferCountdown();
     }, 1000);
+  }
+
+  function startFeedRotation(){
+    if(feedItems.length < 2) return;
+    setInterval(() => {
+      feedItems[feedIndex].classList.remove('is-active');
+      feedIndex = (feedIndex + 1) % feedItems.length;
+      feedItems[feedIndex].classList.add('is-active');
+    }, 2600);
   }
 
   function openOffer(){
@@ -288,22 +311,15 @@ window.addEventListener('scroll', () => {
     offerOverlay.classList.remove('is-visible');
     offerOverlay.setAttribute('aria-hidden', 'true');
     document.body.style.overflow = '';
-    sessionStorage.setItem(SESSION_KEY, '1');
+    markSeenOffer();
   }
 
-  document.querySelectorAll('[data-offer-close]').forEach(el => {
-    el.addEventListener('click', closeOffer);
-  });
-
-  document.querySelectorAll('.gcai-offer-cta, .gcai-offer-link').forEach(el => {
-    el.addEventListener('click', closeOffer);
-  });
-
+  document.querySelectorAll('[data-offer-close]').forEach(el => el.addEventListener('click', closeOffer));
+  document.querySelectorAll('.gcai-offer-cta, .gcai-offer-link').forEach(el => el.addEventListener('click', closeOffer));
   document.addEventListener('keydown', e => {
     if(e.key === 'Escape' && offerOverlay.classList.contains('is-visible')) closeOffer();
   });
 
-  if(!sessionStorage.getItem(SESSION_KEY)){
-    setTimeout(openOffer, 10000);
-  }
+  startFeedRotation();
+  if(!hasSeenOffer()) setTimeout(openOffer, 10000);
 })();
