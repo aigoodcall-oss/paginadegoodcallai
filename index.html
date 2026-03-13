@@ -482,33 +482,30 @@
       <a class="btn-outline" href="https://wa.me/51910006578?text=Hola%2C%20quiero%20una%20demo%20de%20Good%20Call%20AI" target="_blank">Solicitar demo gratuita</a>
     </div>
 
+
     <div class="hero-signal-wrap" aria-label="Indicadores de urgencia y prueba social">
-    <div class="hero-proof-strip">
-      <div class="hero-proof-card hero-proof-live">
-        <div class="hero-proof-kicker"><span class="hero-proof-dot"></span> Ahora mismo</div>
-        <div class="hero-proof-value"><strong id="liveViewerCount">14</strong></div>
-        <div class="hero-proof-label">negocios revisando esta solución</div>
+      <div class="hero-signal-bar">
+        <div class="hero-signal-chip">
+          <div class="hero-signal-kicker"><span class="hero-signal-dot"></span> Ahora mismo</div>
+          <div class="hero-signal-value"><strong id="heroViewerCount">14</strong></div>
+          <div class="hero-signal-copy">negocios revisando esta solución</div>
+        </div>
+        <div class="hero-signal-chip">
+          <div class="hero-signal-kicker">Onboarding</div>
+          <div class="hero-signal-value"><strong id="heroSlotCount">4</strong></div>
+          <div class="hero-signal-copy">cupos disponibles esta semana</div>
+        </div>
+        <div class="hero-signal-chip">
+          <div class="hero-signal-kicker">Precio de entrada</div>
+          <div class="hero-signal-value"><strong>$179</strong><span>/mes</span></div>
+          <div class="hero-signal-copy">sin costo de instalación</div>
+        </div>
       </div>
-
-      <div class="hero-proof-card hero-proof-urgency">
-        <div class="hero-proof-kicker">Onboarding express</div>
-        <div class="hero-proof-value"><strong id="slotCount">4</strong></div>
-        <div class="hero-proof-label">cupos disponibles esta semana</div>
-      </div>
-
-      <div class="hero-proof-card hero-proof-offer">
-        <div class="hero-proof-kicker">Precio actual</div>
-        <div class="hero-proof-value"><strong>$179</strong><span>/mes</span></div>
-        <div class="hero-proof-label">sin costo de instalación</div>
+      <div class="hero-signal-live">
+        <span class="hero-signal-pill">Actividad reciente</span>
+        <span id="heroRecentActivity">Una clínica en Lima pidió una demo hace 2 min</span>
       </div>
     </div>
-
-    <div class="hero-live-ticker">
-      <span class="hero-live-pill">Actividad en vivo</span>
-      <span id="heroRecentText">Una clínica en Lima solicitó una demo hace 2 min</span>
-    </div>
-  </div>
-
   </div>
 
   <!-- LIVE WSP CHAT ANIMATION -->
@@ -885,66 +882,51 @@
 </div>
 
 
-<div id="gcai-offer-overlay" class="gcai-offer-overlay" aria-hidden="true">
-  <div class="gcai-offer-backdrop" data-offer-close></div>
-  <div class="gcai-offer-modal" role="dialog" aria-modal="true" aria-labelledby="gcaiOfferTitle">
-    <button class="gcai-offer-close" type="button" aria-label="Cerrar oferta" data-offer-close>
-      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+<div id="gcOfferOverlay" class="gc-offer-overlay" aria-hidden="true">
+  <div class="gc-offer-backdrop" data-offer-close></div>
+  <div class="gc-offer-card" role="dialog" aria-modal="true" aria-labelledby="gcOfferTitle">
+    <button class="gc-offer-close" type="button" aria-label="Cerrar anuncio" data-offer-close>
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
     </button>
-
-    <div class="gcai-offer-shell">
-      <div class="gcai-offer-copy">
-        <div class="gcai-offer-badge"><span></span> Demo prioritaria</div>
-        <h2 id="gcaiOfferTitle" class="gcai-offer-title">Agenda hoy tu demo y conserva el <em>precio de lanzamiento</em></h2>
-        <p class="gcai-offer-text">Te mostramos el flujo funcionando en tu negocio y, si te encaja, bloqueas el valor actual sin pagar instalación.</p>
-
-        <div class="gcai-offer-metrics">
-          <div class="gcai-offer-metric">
-            <span class="label">Cuenta regresiva</span>
-            <strong id="gcaiOfferCountdown">09:59</strong>
+    <div class="gc-offer-grid">
+      <div class="gc-offer-copy">
+        <div class="gc-offer-badge"><span></span> IMPLEMENTACIÓN RÁPIDA</div>
+        <h3 class="gc-offer-title" id="gcOfferTitle">Tu bot puede quedar activo esta misma semana.</h3>
+        <p class="gc-offer-text">Configuramos el flujo, las respuestas y la captura de leads sin costo de instalación. Si agendas hoy, conservas el plan desde $179/mes.</p>
+        <div class="gc-offer-metrics">
+          <div class="gc-offer-metric">
+            <span class="gc-offer-metric-label">Tiempo restante</span>
+            <strong id="gcOfferCountdown">10:00</strong>
           </div>
-          <div class="gcai-offer-metric">
-            <span class="label">Cupos restantes</span>
-            <strong id="gcaiOfferSlots">4</strong>
+          <div class="gc-offer-metric">
+            <span class="gc-offer-metric-label">Cupos esta semana</span>
+            <strong id="gcOfferSlots">4</strong>
           </div>
-          <div class="gcai-offer-metric">
-            <span class="label">Setup</span>
-            <strong>24h</strong>
+          <div class="gc-offer-metric">
+            <span class="gc-offer-metric-label">Precio base</span>
+            <strong>$179/mes</strong>
           </div>
         </div>
-
-        <div class="gcai-offer-actions">
-          <a class="gcai-offer-cta" href="https://wa.me/51910006578?text=Hola%2C%20quiero%20mi%20demo%20con%20la%20oferta%20de%20Good%20Call%20AI" target="_blank" rel="noopener">Quiero agendar mi demo</a>
-          <a class="gcai-offer-link" href="pages/precios.html">Ver planes primero</a>
+        <div class="gc-offer-actions">
+          <a class="gc-offer-primary" href="https://wa.me/51910006578?text=Hola%2C%20quiero%20agendar%20una%20demo%20de%20Good%20Call%20AI" target="_blank">Quiero una demo</a>
+          <a class="gc-offer-secondary" href="pages/precios.html">Ver planes</a>
         </div>
       </div>
-
-      <div class="gcai-offer-side">
-        <div class="gcai-offer-panel">
-          <div class="gcai-offer-panel-head">Actividad reciente</div>
-          <div class="gcai-offer-feed" id="gcaiOfferFeed">
-            <div class="gcai-offer-feed-item is-active">
-              <strong>Clínica dental</strong>
-              <span>Solicitó automatizar citas y recordatorios.</span>
-            </div>
-            <div class="gcai-offer-feed-item">
-              <strong>Tienda online</strong>
-              <span>Pidió respuestas automáticas para catálogo y pagos.</span>
-            </div>
-            <div class="gcai-offer-feed-item">
-              <strong>Empresa de servicios</strong>
-              <span>Quiere filtrar leads y enviar seguimientos por WhatsApp.</span>
-            </div>
+      <div class="gc-offer-side">
+        <div class="gc-offer-side-card">
+          <div class="gc-offer-side-title">Lo que te dejamos listo</div>
+          <div class="gc-offer-feed" id="gcOfferFeed">
+            <div class="gc-offer-feed-item is-active"><strong>Respuestas automáticas</strong><span>Preguntas frecuentes, horarios, precios y filtros de interés.</span></div>
+            <div class="gc-offer-feed-item"><strong>Captura de leads</strong><span>Nombre, teléfono, servicio y derivación al área correcta.</span></div>
+            <div class="gc-offer-feed-item"><strong>Agenda por WhatsApp</strong><span>Solicitud de citas, confirmaciones y seguimiento inicial.</span></div>
           </div>
         </div>
-        <div class="gcai-offer-note">
-          <span class="gcai-offer-note-dot"></span>
-          Sin costo de instalación. Setup rápido y enfoque en captación, respuesta y cierre por WhatsApp.
-        </div>
+        <div class="gc-offer-note"><span class="gc-offer-note-dot"></span> Se cierra solo cuando termina el tiempo o cuando el visitante lo cierra.</div>
       </div>
     </div>
   </div>
 </div>
+
 
 <script src="js/main.js"></script>
 <script>
