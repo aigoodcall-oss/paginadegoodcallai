@@ -481,6 +481,35 @@
       <a class="btn-accent" href="pages/precios.html">Ver planes desde $179/mes →</a>
       <a class="btn-outline" href="https://wa.me/51910006578?text=Hola%2C%20quiero%20una%20demo%20de%20Good%20Call%20AI" target="_blank">Solicitar demo gratuita</a>
     </div>
+
+    <div class="hero-proof-strip" aria-label="Indicadores de urgencia y prueba social">
+      <div class="hero-proof-card hero-proof-live">
+        <div class="hero-proof-top">
+          <span class="hero-proof-kicker"><span class="hero-proof-dot"></span>Actividad en vivo</span>
+          <span class="hero-proof-mini">Actualizado ahora</span>
+        </div>
+        <div class="hero-proof-main"><strong id="liveViewerCount">14</strong> personas viendo esta solución ahora</div>
+        <div class="hero-proof-sub" id="heroRecentText">Nueva demo solicitada por una clínica en Lima hace 2 min</div>
+        <div class="hero-proof-tags">
+          <span>Clínicas</span>
+          <span>E-commerce</span>
+          <span>Servicios</span>
+        </div>
+      </div>
+
+      <div class="hero-proof-card hero-proof-urgency">
+        <div class="hero-proof-kicker">Implementación rápida</div>
+        <div class="hero-proof-main"><strong id="slotCount">4</strong> cupos de onboarding esta semana</div>
+        <div class="hero-proof-sub">Te configuramos el flujo, el bot y las respuestas sin costo de instalación.</div>
+      </div>
+
+      <div class="hero-proof-card hero-proof-offer">
+        <div class="hero-proof-kicker">Ventaja de hoy</div>
+        <div class="hero-proof-main">Precio congelado desde <strong>$179/mes</strong></div>
+        <div class="hero-proof-sub">Entra, agenda la demo y activa tu bot sin perder el precio de lanzamiento.</div>
+      </div>
+    </div>
+
   </div>
 
   <!-- LIVE WSP CHAT ANIMATION -->
@@ -854,6 +883,68 @@
     <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
     <span class="wsp-notif">1</span>
   </button>
+</div>
+
+
+<div id="gcai-offer-overlay" class="gcai-offer-overlay" aria-hidden="true">
+  <div class="gcai-offer-backdrop" data-offer-close></div>
+  <div class="gcai-offer-modal" role="dialog" aria-modal="true" aria-labelledby="gcaiOfferTitle">
+    <button class="gcai-offer-close" type="button" aria-label="Cerrar oferta" data-offer-close>
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+    </button>
+
+    <div class="gcai-offer-shell">
+      <div class="gcai-offer-copy">
+        <div class="gcai-offer-badge"><span></span> Oferta de activación</div>
+        <h2 id="gcaiOfferTitle" class="gcai-offer-title">Activa tu demo hoy y obtén <em>50% de descuento</em> en tu primer mes</h2>
+        <p class="gcai-offer-text">Obtén una condición de lanzamiento, agenda la demo y activa tu automatización con una propuesta pensada para convertir visitas frías en conversaciones reales.</p>
+
+        <div class="gcai-offer-metrics">
+          <div class="gcai-offer-metric">
+            <span class="label">Cuenta regresiva</span>
+            <strong id="gcaiOfferCountdown">09:59</strong>
+          </div>
+          <div class="gcai-offer-metric">
+            <span class="label">Cupos restantes</span>
+            <strong id="gcaiOfferSlots">4</strong>
+          </div>
+          <div class="gcai-offer-metric">
+            <span class="label">Setup</span>
+            <strong>24h</strong>
+          </div>
+        </div>
+
+        <div class="gcai-offer-actions">
+          <a class="gcai-offer-cta" href="https://wa.me/51910006578?text=Hola%2C%20quiero%20mi%20demo%20con%20la%20oferta%20de%20Good%20Call%20AI" target="_blank" rel="noopener">Quiero mi demo con oferta</a>
+          <a class="gcai-offer-link" href="pages/precios.html">Ver planes primero</a>
+        </div>
+      </div>
+
+      <div class="gcai-offer-side">
+        <div class="gcai-offer-panel">
+          <div class="gcai-offer-panel-head">Actividad reciente</div>
+          <div class="gcai-offer-feed" id="gcaiOfferFeed">
+            <div class="gcai-offer-feed-item is-active">
+              <strong>Clínica dental</strong>
+              <span>Solicitó automatizar citas y recordatorios.</span>
+            </div>
+            <div class="gcai-offer-feed-item">
+              <strong>Tienda online</strong>
+              <span>Pidió respuestas automáticas para catálogo y pagos.</span>
+            </div>
+            <div class="gcai-offer-feed-item">
+              <strong>Empresa de servicios</strong>
+              <span>Quiere filtrar leads y enviar seguimientos por WhatsApp.</span>
+            </div>
+          </div>
+        </div>
+        <div class="gcai-offer-note">
+          <span class="gcai-offer-note-dot"></span>
+          Esta capa aparece una sola vez por sesión para no molestar al visitante.
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 
 <script src="js/main.js"></script>
