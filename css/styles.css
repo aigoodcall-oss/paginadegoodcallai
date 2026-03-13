@@ -30,6 +30,7 @@
 [data-theme="light"] .fm-bubble,[data-theme="light"] .wsp-msg-bubble{color:#111!important}
 [data-theme="light"] .fm-time,[data-theme="light"] .wsp-msg-time{color:rgba(0,0,0,.4)!important}
 [data-theme="light"] .hero-bg{opacity:.5}
+[data-theme="light"] .logo-dark{display:none}[data-theme="light"] .logo-light{display:block}
 
 html{scroll-behavior:smooth}
 body{font-family:var(--font-body);background:var(--bg);color:var(--ink);overflow-x:hidden;line-height:1.7;-webkit-font-smoothing:antialiased;transition:background .4s,color .4s}
@@ -60,8 +61,8 @@ nav{position:fixed;top:0;left:0;width:100%;z-index:1000;transition:background .4
 nav.scrolled{background:var(--nav-bg);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);box-shadow:0 1px 0 var(--border),var(--shadow)}
 .nav-inner{max-width:var(--max);margin:0 auto;padding:0 28px;display:flex;align-items:center;justify-content:space-between;height:var(--nav-h)}
 .nav-logo{display:flex;align-items:center;gap:12px;font-size:1.34rem;font-weight:800;color:var(--ink);cursor:pointer;letter-spacing:-.02em}
-.nav-logo img{height:42px;width:42px;border-radius:12px;object-fit:contain;display:block;box-shadow:0 8px 24px rgba(0,0,0,.24);flex-shrink:0;padding:2px;background:rgba(7,12,24,.92)}
-.nav-logo .ai{background:var(--gradient-text);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.nav-logo img{height:40px;width:40px;border-radius:12px;object-fit:contain;display:block;box-shadow:0 8px 24px rgba(0,0,0,.24);flex-shrink:0;padding:2px;background:rgba(7,12,24,.92)}
+.nav-logo .ai{background:var(--gradient-text);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
 .nav-links{display:flex;list-style:none;gap:6px}
 .nav-links a{font-size:.82rem;font-weight:500;color:var(--ink-2);padding:8px 14px;border-radius:8px;transition:var(--transition)}
 .nav-links a:hover{color:var(--ink);background:var(--card-glass)}
@@ -200,7 +201,7 @@ footer{padding:4rem 0 2rem;background:var(--bg);border-top:1px solid var(--borde
 .ft-top{display:grid;grid-template-columns:1.3fr 2fr;gap:3rem;margin-bottom:3rem}
 .ft-logo{display:flex;align-items:center;gap:10px;font-size:1.1rem;font-weight:700;color:var(--ink);margin-bottom:10px}
 .ft-logo img{height:36px;width:36px;border-radius:10px;object-fit:contain;display:block}
-.ft-logo .ai{background:var(--gradient-text);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.ft-logo .ai{background:var(--gradient-text);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
 .ft-tag{font-size:.82rem;color:var(--ink-3);margin-bottom:16px}
 .ft-socials{display:flex;gap:10px}
 .ft-socials a{width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;background:var(--card-glass);border:1px solid var(--border);color:var(--ink-3);transition:var(--transition)}

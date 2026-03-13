@@ -86,7 +86,7 @@ const counterObserver = new IntersectionObserver((entries) => {
   });
 }, { threshold: 0.3 });
 
-const statsSection = document.querySelector('.hero-stats');
+const statsSection = document.querySelector('.stats-bar');
 if (statsSection) counterObserver.observe(statsSection);
 
 // ── WhatsApp Widget ──
