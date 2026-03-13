@@ -203,3 +203,107 @@ window.addEventListener('scroll', () => {
     localStorage.setItem('gc-theme', next);
   });
 })();
+
+
+// ══ HERO URGENCY + OFFER POPUP ══
+(function(){
+  const liveCount = document.getElementById('liveViewerCount');
+  const recentText = document.getElementById('heroRecentText');
+  const slotCount = document.getElementById('slotCount');
+  const offerOverlay = document.getElementById('gcai-offer-overlay');
+  const offerCountdown = document.getElementById('gcaiOfferCountdown');
+  const offerSlots = document.getElementById('gcaiOfferSlots');
+  const feedItems = Array.from(document.querySelectorAll('.gcai-offer-feed-item'));
+  if(!liveCount || !recentText || !slotCount || !offerOverlay || !offerCountdown || !offerSlots) return;
+
+  const recentMessages = [
+    'Nueva demo solicitada por una clínica en Lima hace 2 min',
+    'Un e-commerce pidió automatización de catálogo hace 4 min',
+    'Un negocio de servicios quiere filtrar leads por WhatsApp ahora',
+    'Una empresa local revisó planes y pidió implementación rápida',
+  ];
+
+  let msgIndex = 0;
+  let viewers = parseInt(liveCount.textContent, 10) || 14;
+  let slots = parseInt(slotCount.textContent, 10) || 4;
+
+  function rotateHeroProof(){
+    viewers += Math.random() > 0.5 ? 1 : -1;
+    viewers = Math.max(11, Math.min(19, viewers));
+    liveCount.textContent = viewers;
+    msgIndex = (msgIndex + 1) % recentMessages.length;
+    recentText.textContent = recentMessages[msgIndex];
+  }
+
+  setInterval(rotateHeroProof, 4200);
+
+  const FEED_ROTATE_MS = 2400;
+  let activeFeed = 0;
+  if(feedItems.length){
+    setInterval(()=>{
+      feedItems[activeFeed].classList.remove('is-active');
+      activeFeed = (activeFeed + 1) % feedItems.length;
+      feedItems[activeFeed].classList.add('is-active');
+    }, FEED_ROTATE_MS);
+  }
+
+  const SESSION_KEY = 'gcai-offer-shown';
+  let offerSeconds = 9 * 60 + 59;
+  let offerTimer = null;
+
+  function renderOfferCountdown(){
+    const mins = Math.floor(offerSeconds / 60).toString().padStart(2, '0');
+    const secs = (offerSeconds % 60).toString().padStart(2, '0');
+    offerCountdown.textContent = `${mins}:${secs}`;
+  }
+
+  function startOfferCountdown(){
+    if(offerTimer) return;
+    renderOfferCountdown();
+    offerTimer = setInterval(()=>{
+      if(offerSeconds <= 0){
+        clearInterval(offerTimer);
+        offerTimer = null;
+        closeOffer();
+        return;
+      }
+      offerSeconds -= 1;
+      if(offerSeconds % 90 === 0 && slots > 2){
+        slots -= 1;
+        slotCount.textContent = slots;
+        offerSlots.textContent = slots;
+      }
+      renderOfferCountdown();
+    }, 1000);
+  }
+
+  function openOffer(){
+    offerOverlay.classList.add('is-visible');
+    offerOverlay.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+    startOfferCountdown();
+  }
+
+  function closeOffer(){
+    offerOverlay.classList.remove('is-visible');
+    offerOverlay.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
+    sessionStorage.setItem(SESSION_KEY, '1');
+  }
+
+  document.querySelectorAll('[data-offer-close]').forEach(el => {
+    el.addEventListener('click', closeOffer);
+  });
+
+  document.querySelectorAll('.gcai-offer-cta, .gcai-offer-link').forEach(el => {
+    el.addEventListener('click', closeOffer);
+  });
+
+  document.addEventListener('keydown', e => {
+    if(e.key === 'Escape' && offerOverlay.classList.contains('is-visible')) closeOffer();
+  });
+
+  if(!sessionStorage.getItem(SESSION_KEY)){
+    setTimeout(openOffer, 10000);
+  }
+})();
