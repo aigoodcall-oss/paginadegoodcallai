@@ -205,121 +205,125 @@ window.addEventListener('scroll', () => {
 })();
 
 
-// ══ HERO URGENCY + OFFER POPUP ══
-(() => {
-  const liveCount = document.getElementById('liveViewerCount');
-  const recentText = document.getElementById('heroRecentText');
-  const slotCount = document.getElementById('slotCount');
-  if(!liveCount && !recentText && !slotCount) return;
+// ══ HERO SIGNAL + OFFER POPUP ══
+(function(){
+  const viewerEl = document.getElementById('heroViewerCount');
+  const slotEl = document.getElementById('heroSlotCount');
+  const recentEl = document.getElementById('heroRecentActivity');
 
-  const recentItems = [
-    'Una clínica en Lima solicitó una demo hace 2 min',
-    'Un negocio de servicios pidió automatizar respuestas hace 4 min',
-    'Una tienda online consultó por seguimiento de leads hace 6 min',
-    'Una empresa local pidió configurar citas por WhatsApp hace 9 min'
-  ];
+  if (viewerEl || slotEl || recentEl) {
+    const recentItems = [
+      'Una clínica en Lima pidió una demo hace 2 min',
+      'Un negocio de servicios consultó por leads hace 4 min',
+      'Una tienda online preguntó por seguimiento hace 6 min',
+      'Una empresa local pidió agenda por WhatsApp hace 9 min'
+    ];
 
-  let viewers = parseInt(liveCount?.textContent || '14', 10) || 14;
-  let slots = parseInt(slotCount?.textContent || '4', 10) || 4;
-  let recentIndex = 0;
+    let viewers = parseInt(viewerEl?.textContent || '14', 10) || 14;
+    let slots = parseInt(slotEl?.textContent || '4', 10) || 4;
+    let recentIndex = 0;
 
-  setInterval(() => {
-    if(liveCount){
-      viewers += Math.random() > 0.5 ? 1 : -1;
-      viewers = Math.max(11, Math.min(19, viewers));
-      liveCount.textContent = viewers;
-    }
+    setInterval(() => {
+      if (viewerEl) {
+        viewers += Math.random() > 0.5 ? 1 : -1;
+        viewers = Math.max(11, Math.min(19, viewers));
+        viewerEl.textContent = viewers;
+      }
 
-    if(recentText){
-      recentIndex = (recentIndex + 1) % recentItems.length;
-      recentText.textContent = recentItems[recentIndex];
-    }
+      if (slotEl && Math.random() > 0.76 && slots > 3) {
+        slots -= 1;
+        slotEl.textContent = slots;
+      }
 
-    if(slotCount && Math.random() > 0.72 && slots > 3){
-      slots -= 1;
-      slotCount.textContent = slots;
-    }
-  }, 5200);
-})();
+      if (recentEl) {
+        recentIndex = (recentIndex + 1) % recentItems.length;
+        recentEl.textContent = recentItems[recentIndex];
+      }
+    }, 5200);
+  }
 
-(() => {
-  const offerOverlay = document.getElementById('gcai-offer-overlay');
-  const offerCountdown = document.getElementById('gcaiOfferCountdown');
-  const offerSlots = document.getElementById('gcaiOfferSlots');
-  if(!offerOverlay || !offerCountdown || !offerSlots) return;
+  const overlay = document.getElementById('gcOfferOverlay');
+  const countdownEl = document.getElementById('gcOfferCountdown');
+  const slotsEl = document.getElementById('gcOfferSlots');
+  const feedItems = Array.from(document.querySelectorAll('#gcOfferFeed .gc-offer-feed-item'));
 
-  const feedItems = Array.from(document.querySelectorAll('#gcaiOfferFeed .gcai-offer-feed-item'));
-  const SESSION_KEY = 'gcai-offer-seen';
-  let offerSeconds = 10 * 60;
-  let offerTimer = null;
-  let slots = parseInt(offerSlots.textContent, 10) || 4;
+  if (!overlay || !countdownEl || !slotsEl) return;
+
+  let secondsLeft = 10 * 60;
+  let countdownTimer = null;
   let feedIndex = 0;
-  let storageBlocked = false;
+  let popupOpened = false;
+  let popupSlots = parseInt(slotsEl.textContent || '4', 10) || 4;
 
-  function hasSeenOffer(){
-    try { return sessionStorage.getItem(SESSION_KEY) === '1'; }
-    catch (e) { storageBlocked = true; return false; }
+  function renderCountdown() {
+    const mins = String(Math.floor(secondsLeft / 60)).padStart(2, '0');
+    const secs = String(secondsLeft % 60).padStart(2, '0');
+    countdownEl.textContent = `${mins}:${secs}`;
   }
 
-  function markSeenOffer(){
-    if(storageBlocked) return;
-    try { sessionStorage.setItem(SESSION_KEY, '1'); } catch (e) { storageBlocked = true; }
-  }
+  function startCountdown() {
+    if (countdownTimer) return;
+    renderCountdown();
 
-  function renderOfferCountdown(){
-    const mins = String(Math.floor(offerSeconds / 60)).padStart(2, '0');
-    const secs = String(offerSeconds % 60).padStart(2, '0');
-    offerCountdown.textContent = `${mins}:${secs}`;
-  }
-
-  function startOfferCountdown(){
-    if(offerTimer) return;
-    renderOfferCountdown();
-    offerTimer = setInterval(() => {
-      if(offerSeconds <= 0){
-        clearInterval(offerTimer);
-        offerTimer = null;
+    countdownTimer = setInterval(() => {
+      if (secondsLeft <= 0) {
         closeOffer();
         return;
       }
-      offerSeconds -= 1;
-      if(offerSeconds % 90 === 0 && slots > 2){
-        slots -= 1;
-        offerSlots.textContent = slots;
+
+      secondsLeft -= 1;
+
+      if (secondsLeft % 90 === 0 && popupSlots > 2) {
+        popupSlots -= 1;
+        slotsEl.textContent = popupSlots;
       }
-      renderOfferCountdown();
+
+      renderCountdown();
     }, 1000);
   }
 
-  function startFeedRotation(){
-    if(feedItems.length < 2) return;
+  function startFeedRotation() {
+    if (feedItems.length < 2) return;
     setInterval(() => {
       feedItems[feedIndex].classList.remove('is-active');
       feedIndex = (feedIndex + 1) % feedItems.length;
       feedItems[feedIndex].classList.add('is-active');
-    }, 2600);
+    }, 2400);
   }
 
-  function openOffer(){
-    offerOverlay.classList.add('is-visible');
-    offerOverlay.setAttribute('aria-hidden', 'false');
+  function openOffer() {
+    if (popupOpened) return;
+    popupOpened = true;
+    overlay.classList.add('is-visible');
+    overlay.setAttribute('aria-hidden', 'false');
     document.body.style.overflow = 'hidden';
-    startOfferCountdown();
+    startCountdown();
   }
 
-  function closeOffer(){
-    offerOverlay.classList.remove('is-visible');
-    offerOverlay.setAttribute('aria-hidden', 'true');
+  function closeOffer() {
+    overlay.classList.remove('is-visible');
+    overlay.setAttribute('aria-hidden', 'true');
     document.body.style.overflow = '';
-    markSeenOffer();
+    if (countdownTimer) {
+      clearInterval(countdownTimer);
+      countdownTimer = null;
+    }
   }
 
-  document.querySelectorAll('[data-offer-close]').forEach(el => el.addEventListener('click', closeOffer));
-  document.querySelectorAll('.gcai-offer-cta, .gcai-offer-link').forEach(el => el.addEventListener('click', closeOffer));
-  document.addEventListener('keydown', e => {
-    if(e.key === 'Escape' && offerOverlay.classList.contains('is-visible')) closeOffer();
+  document.querySelectorAll('[data-offer-close]').forEach((el) => {
+    el.addEventListener('click', closeOffer);
+  });
+
+  document.querySelectorAll('.gc-offer-primary, .gc-offer-secondary').forEach((el) => {
+    el.addEventListener('click', closeOffer);
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && overlay.classList.contains('is-visible')) {
+      closeOffer();
+    }
   });
 
   startFeedRotation();
-  if(!hasSeenOffer()) setTimeout(openOffer, 10000);
+  setTimeout(openOffer, 10000);
 })();
