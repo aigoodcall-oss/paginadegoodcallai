@@ -214,7 +214,7 @@ footer{padding:4rem 0 2rem;background:var(--bg);border-top:1px solid var(--borde
 .ft-bottom{display:flex;justify-content:space-between;align-items:center;padding-top:2rem;border-top:1px solid var(--border);font-size:.76rem;color:var(--ink-3)}
 .ft-legal{display:flex;gap:18px}.ft-legal a{color:var(--ink-3);transition:var(--transition)}.ft-legal a:hover{color:var(--accent)}
 
-.wsp-widget{position:fixed;bottom:24px;right:24px;z-index:900}
+.wsp-widget{position:fixed;bottom:28px;right:28px;z-index:9999}
 .wsp-btn{width:58px;height:58px;border-radius:50%;border:none;cursor:pointer;background:linear-gradient(135deg,#25d366,#128c7e);color:#fff;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 20px rgba(37,211,102,.4);transition:var(--transition);position:relative}
 .wsp-btn:hover{transform:scale(1.08)}.wsp-btn svg{width:28px;height:28px}
 .wsp-notif{position:absolute;top:-2px;right:-2px;width:20px;height:20px;border-radius:50%;background:#ef4444;color:#fff;font-size:.6rem;font-weight:800;display:flex;align-items:center;justify-content:center;animation:pulse 2s infinite}
