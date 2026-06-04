@@ -1207,6 +1207,28 @@ function trimChat(container, maxVisible){
   </button>
 </div>
 
+
+<script>
+(function(){
+  var bubble = document.getElementById('wspBubble');
+  var notif  = document.querySelector('.wsp-notif');
+  function openBubble(){
+    if(!bubble) return;
+    bubble.classList.add('show');
+    if(notif) notif.classList.add('hidden');
+  }
+  function closeBubble(){
+    if(bubble) bubble.classList.remove('show');
+  }
+  function toggleBubble(){
+    if(!bubble) return;
+    bubble.classList.contains('show') ? closeBubble() : openBubble();
+  }
+  window.toggleBubble = toggleBubble;
+  window.closeBubble  = closeBubble;
+  setTimeout(function(){ openBubble(); }, 4000);
+})();
+</script>
   <script src="js/main.js"></script>
 </body>
 </html>
