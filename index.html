@@ -1302,8 +1302,10 @@ function trimChat(container, maxVisible){
       var src = playCtx.createBufferSource();
       src.buffer = buf;
       src.connect(playCtx.destination);
-      // Encadenar al siguiente slot disponible (como jitter buffer del .52)
-      var startAt = Math.max(playCtx.currentTime + 0.08, nextPlayAt);
+      // Encadenar secuencialmente; si la cola se fue >1.5s adelante, recortar
+      var now = playCtx.currentTime;
+      if(nextPlayAt > now + 1.5) nextPlayAt = now + 0.05;
+      var startAt = Math.max(now + 0.05, nextPlayAt);
       src.start(startAt);
       nextPlayAt = startAt + buf.duration;
     } catch(ex){ console.warn('PCM error', ex); }
@@ -1371,8 +1373,6 @@ function trimChat(container, maxVisible){
           if(msg.tipo === 'transcripcion' && msg.texto) addTranscripcion(msg.rol || 'asistente', msg.texto);
           if(msg.tipo === 'estado' && msg.texto) setEstado(msg.texto);
           if(msg.tipo === 'sesion_iniciada') setEstado('Habla ahora...');
-          // Cuando la IA empieza a hablar, resetear queue si hay retraso acumulado
-          if(msg.tipo === 'transcripcion' && msg.rol === 'asistente') resetPlayQueue();
         } catch(ex){}
       };
 
