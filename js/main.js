@@ -91,45 +91,25 @@ if (statsSection) counterObserver.observe(statsSection);
 
 // ── WhatsApp Widget ──
 const wspWidget = document.getElementById('wspWidget');
-const wspBtn    = document.getElementById('wspBtn');
-const wspClose  = document.getElementById('wspClose');
-const wspToast  = document.getElementById('wspToast');
-const wspToastX = document.getElementById('wspToastClose');
-const wspNotif  = document.getElementById('wspNotif');
-let widgetOpened = false;
-let toastTimer   = null;
+const wspBtn = document.getElementById('wspBtn');
 
-function openWidget() {
-  if (!wspWidget) return;
-  wspWidget.classList.add('open');
-  hideToast();
-  if (wspNotif) wspNotif.style.display = 'none';
-  widgetOpened = true;
-}
-function closeWidget() {
-  if (wspWidget) wspWidget.classList.remove('open');
-}
 function toggleWsp() {
-  wspWidget && wspWidget.classList.contains('open') ? closeWidget() : openWidget();
+  wspWidget.classList.toggle('open');
+  const notif = wspWidget.querySelector('.wsp-notif');
+  if (notif) notif.style.display = 'none';
 }
-function showToast() {
-  if (widgetOpened || !wspToast) return;
-  wspToast.classList.add('show');
-  if (toastTimer) clearTimeout(toastTimer);
-  toastTimer = setTimeout(hideToast, 8000);
-}
-function hideToast() {
-  if (wspToast) wspToast.classList.remove('show');
+function closeWsp() {
+  wspWidget.classList.remove('open');
 }
 
-if (wspBtn)    wspBtn.addEventListener('click', toggleWsp);
-if (wspClose)  wspClose.addEventListener('click', closeWidget);
-if (wspToast)  wspToast.addEventListener('click', openWidget);
-if (wspToastX) wspToastX.addEventListener('click', (e) => { e.stopPropagation(); hideToast(); });
+if (wspBtn) wspBtn.addEventListener('click', toggleWsp);
 
-// Mostrar toast a los 6s, y repetir cada 45s si no abrieron el widget
-setTimeout(showToast, 6000);
-setInterval(() => { if (!widgetOpened) showToast(); }, 45000);
+// Auto-show bubble after 4 seconds
+setTimeout(() => {
+  if (wspWidget && !wspWidget.classList.contains('open')) {
+    wspWidget.classList.add('open');
+  }
+}, 4000);
 
 // ── Active nav link ──
 function updateActiveNav() {
