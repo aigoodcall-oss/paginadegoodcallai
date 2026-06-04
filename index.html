@@ -1277,10 +1277,21 @@ function trimChat(container, maxVisible){
   var WS_URL = 'wss://crm.goodcallai.net/ws/voz-live?partidaId=' + PARTIDA_ID;
 
   function setEstado(txt){ document.getElementById('voz-estado').textContent = txt; }
+
+  var _lastRol = null;
   function addTranscripcion(rol, txt){
     var el = document.getElementById('voz-transcripcion');
     var pre = rol === 'usuario' ? 'Tu: ' : 'IA: ';
-    el.textContent += (el.textContent ? '\n' : '') + pre + txt;
+    if(rol === _lastRol) {
+      // Mismo turno: reemplaza la última línea con el texto acumulado
+      var lines = el.textContent.split('\n');
+      lines[lines.length - 1] = pre + txt;
+      el.textContent = lines.join('\n');
+    } else {
+      // Turno nuevo
+      el.textContent += (el.textContent ? '\n' : '') + pre + txt;
+      _lastRol = rol;
+    }
     el.scrollTop = el.scrollHeight;
   }
 
