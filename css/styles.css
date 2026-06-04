@@ -247,10 +247,7 @@ footer{padding:4rem 0 2rem;background:var(--bg);border-top:1px solid var(--borde
   transform: scale(1.08);
   box-shadow: 0 8px 28px rgba(37,211,102,.55), 0 4px 12px rgba(0,0,0,.15);
 }
-.ico-wsp { width: 30px; height: 30px; color: #fff; transition: opacity .2s, transform .2s; }
-.ico-close { width: 22px; height: 22px; color: #fff; position: absolute; opacity: 0; transition: opacity .2s, transform .2s; transform: rotate(-90deg); }
-.wsp-btn.open .ico-wsp { opacity: 0; transform: rotate(90deg); }
-.wsp-btn.open .ico-close { opacity: 1; transform: rotate(0deg); }
+.wsp-btn svg { width: 30px; height: 30px; color: #fff; }
 .wsp-notif {
   position: absolute;
   top: -4px;
