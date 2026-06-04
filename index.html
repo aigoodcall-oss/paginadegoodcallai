@@ -1239,6 +1239,7 @@ function trimChat(container, maxVisible){
 #voz-btn:hover{transform:scale(1.08)}
 #voz-btn svg{width:26px;height:26px;fill:#fff}
 #voz-btn.escuchando{animation:vozPulse 1s ease-in-out infinite;background:linear-gradient(135deg,#ef4444,#f97316)}
+#voz-btn.escuchando{animation:vozPulse 1s ease-in-out infinite;background:linear-gradient(135deg,#ef4444,#f97316)}
 @keyframes vozPulse{0%,100%{box-shadow:0 4px 20px rgba(239,68,68,.5)}50%{box-shadow:0 4px 40px rgba(239,68,68,.9)}}
 #voz-panel{width:280px;background:rgba(6,10,20,.97);border:1px solid rgba(99,102,241,.4);border-radius:16px;padding:16px;display:none;flex-direction:column;gap:10px}
 #voz-panel.open{display:flex}
@@ -1265,17 +1266,39 @@ function trimChat(container, maxVisible){
   document.getElementById('voz-fab').classList.add('visible');
 
   var ws = null;
-  var mediaRecorder = null;
+  var audioCtx = null;
+  var processor = null;
+  var source = null;
   var stream = null;
   var activo = false;
   var PARTIDA_ID = 16;
   var WS_URL = 'wss://crm.goodcallai.net/ws/voz-live?partidaId=' + PARTIDA_ID;
 
   function setEstado(txt){ document.getElementById('voz-estado').textContent = txt; }
-  function addTranscripcion(txt){
+  function addTranscripcion(rol, txt){
     var el = document.getElementById('voz-transcripcion');
-    el.textContent += (el.textContent ? '\n' : '') + txt;
+    var pre = rol === 'usuario' ? 'Tu: ' : 'IA: ';
+    el.textContent += (el.textContent ? '\n' : '') + pre + txt;
     el.scrollTop = el.scrollHeight;
+  }
+
+  // Decodifica base64 PCM 16-bit y lo reproduce via AudioContext
+  function reproducirPCM(b64, sampleRate){
+    try {
+      var bin = atob(b64);
+      var bytes = new Uint8Array(bin.length);
+      for(var i=0;i<bin.length;i++) bytes[i]=bin.charCodeAt(i);
+      var int16 = new Int16Array(bytes.buffer);
+      var float32 = new Float32Array(int16.length);
+      for(var j=0;j<int16.length;j++) float32[j] = int16[j] / 32768.0;
+      var ctx = new (window.AudioContext || window.webkitAudioContext)();
+      var buf = ctx.createBuffer(1, float32.length, sampleRate || 24000);
+      buf.getChannelData(0).set(float32);
+      var src = ctx.createBufferSource();
+      src.buffer = buf;
+      src.connect(ctx.destination);
+      src.start();
+    } catch(ex){ console.warn('PCM playback error', ex); }
   }
 
   window.vozCerrarPanel = function(){
@@ -1300,34 +1323,51 @@ function trimChat(container, maxVisible){
     setEstado('Conectando...');
     document.getElementById('voz-btn').classList.add('escuchando');
 
-    navigator.mediaDevices.getUserMedia({audio:true}).then(function(s){
+    navigator.mediaDevices.getUserMedia({ audio: true }).then(function(s){
       stream = s;
       ws = new WebSocket(WS_URL);
+      ws.binaryType = 'arraybuffer';
 
       ws.onopen = function(){
-        setEstado('Habla ahora...');
-        mediaRecorder = new MediaRecorder(stream, {mimeType:'audio/webm;codecs=opus'});
-        mediaRecorder.ondataavailable = function(e){
-          if(e.data.size > 0 && ws && ws.readyState === WebSocket.OPEN){
-            e.data.arrayBuffer().then(function(buf){ ws.send(buf); });
+        setEstado('Conectado, iniciando...');
+        // Captura PCM a 16kHz usando AudioContext
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)({ sampleRate: 16000 });
+        source = audioCtx.createMediaStreamSource(stream);
+        processor = audioCtx.createScriptProcessor(4096, 1, 1);
+        processor.onaudioprocess = function(e){
+          if(!ws || ws.readyState !== 1) return;
+          var float32 = e.inputBuffer.getChannelData(0);
+          // Float32 -> Int16
+          var int16 = new Int16Array(float32.length);
+          for(var i=0;i<float32.length;i++){
+            var s = Math.max(-1, Math.min(1, float32[i]));
+            int16[i] = s < 0 ? s * 32768 : s * 32767;
           }
+          // Int16 -> base64
+          var bytes = new Uint8Array(int16.buffer);
+          var bin = '';
+          for(var j=0;j<bytes.length;j++) bin += String.fromCharCode(bytes[j]);
+          ws.send(JSON.stringify({ tipo: 'audio', data: btoa(bin) }));
         };
-        mediaRecorder.start(250);
+        source.connect(processor);
+        processor.connect(audioCtx.destination);
       };
 
       ws.onmessage = function(e){
-        try{
+        try {
           var msg = JSON.parse(e.data);
-          if(msg.tipo === 'transcripcion' && msg.texto) addTranscripcion(msg.texto);
-          if(msg.tipo === 'estado') setEstado(msg.texto);
+          if(msg.tipo === 'audio' && msg.data) reproducirPCM(msg.data, msg.sampleRate || 24000);
+          if(msg.tipo === 'transcripcion' && msg.texto) addTranscripcion(msg.rol || 'asistente', msg.texto);
+          if(msg.tipo === 'estado' && msg.texto) setEstado(msg.texto);
+          if(msg.tipo === 'sesion_iniciada') setEstado('Habla ahora...');
         } catch(ex){}
       };
 
       ws.onclose = function(){ setEstado('Desconectado'); vozDetener(); };
-      ws.onerror = function(){ setEstado('Error de conexión'); vozDetener(); };
+      ws.onerror = function(){ setEstado('Error de conexion'); vozDetener(); };
 
-    }).catch(function(err){
-      setEstado('Sin acceso al micrófono');
+    }).catch(function(){
+      setEstado('Sin acceso al microfono');
       activo = false;
       document.getElementById('voz-btn').classList.remove('escuchando');
     });
@@ -1337,10 +1377,11 @@ function trimChat(container, maxVisible){
     activo = false;
     document.getElementById('voz-btn').classList.remove('escuchando');
     setEstado('Listo para hablar');
-    if(mediaRecorder && mediaRecorder.state !== 'inactive') mediaRecorder.stop();
-    if(stream) stream.getTracks().forEach(function(t){ t.stop(); });
-    if(ws) ws.close();
-    ws = null; mediaRecorder = null; stream = null;
+    if(processor) { try { processor.disconnect(); } catch(ex){} processor = null; }
+    if(source) { try { source.disconnect(); } catch(ex){} source = null; }
+    if(audioCtx) { try { audioCtx.close(); } catch(ex){} audioCtx = null; }
+    if(stream) stream.getTracks().forEach(function(t){ t.stop(); }); stream = null;
+    if(ws) { try { ws.close(); } catch(ex){} } ws = null;
   }
 })();
 </script>
