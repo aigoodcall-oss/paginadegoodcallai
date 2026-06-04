@@ -1333,7 +1333,7 @@ function trimChat(container, maxVisible){
     setEstado('Conectando...');
     document.getElementById('voz-btn').classList.add('escuchando');
 
-    navigator.mediaDevices.getUserMedia({ audio: true }).then(function(s){
+    navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true } }).then(function(s){
       stream = s;
       ws = new WebSocket(WS_URL);
       ws.binaryType = 'arraybuffer';
