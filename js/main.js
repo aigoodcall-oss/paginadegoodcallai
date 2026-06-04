@@ -89,33 +89,7 @@ const counterObserver = new IntersectionObserver((entries) => {
 const statsSection = document.querySelector('.stats-bar');
 if (statsSection) counterObserver.observe(statsSection);
 
-// ── WhatsApp Widget ──
-const wspBtn    = document.getElementById('wspBtn');
-const wspBubble = document.getElementById('wspBubble');
-const wspNotif  = document.querySelector('.wsp-notif');
-let bubbleOpen  = false;
 
-function toggleBubble() {
-  bubbleOpen ? closeBubble() : openBubble();
-}
-function openBubble() {
-  if (!wspBubble || !wspBtn) return;
-  bubbleOpen = true;
-  wspBubble.classList.add('show');
-  wspBtn.classList.add('open');
-  if (wspNotif) wspNotif.classList.add('hidden');
-}
-function closeBubble() {
-  if (!wspBubble || !wspBtn) return;
-  bubbleOpen = false;
-  wspBubble.classList.remove('show');
-  wspBtn.classList.remove('open');
-}
-window.toggleBubble = toggleBubble;
-window.closeBubble  = closeBubble;
-
-// Abre automáticamente la burbuja a los 4 segundos
-setTimeout(() => { if (!bubbleOpen) openBubble(); }, 4000);
 
 // ── Active nav link ──
 function updateActiveNav() {
