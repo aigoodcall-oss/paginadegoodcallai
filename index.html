@@ -1244,7 +1244,14 @@ function trimChat(container, maxVisible){
 #voz-panel{width:280px;background:rgba(6,10,20,.97);border:1px solid rgba(99,102,241,.4);border-radius:16px;padding:16px;display:none;flex-direction:column;gap:10px}
 #voz-panel.open{display:flex}
 #voz-estado{font-size:12px;color:#94a3b8;text-align:center}
-#voz-transcripcion{font-size:13px;color:#e2e8f0;min-height:60px;max-height:120px;overflow-y:auto;background:rgba(255,255,255,.04);border-radius:8px;padding:8px;line-height:1.5}
+#voz-orb-wrap{position:relative;display:flex;align-items:center;justify-content:center;height:150px;margin:6px 0}
+#voz-orb-glow{position:absolute;width:128px;height:128px;border-radius:50%;background:radial-gradient(circle,rgba(99,102,241,.55),rgba(6,182,212,.28) 55%,transparent 75%);filter:blur(7px);animation:vozGlow 2.6s ease-in-out infinite}
+#voz-orb-wrap.hablando #voz-orb-glow{animation:vozGlow 1s ease-in-out infinite}
+#voz-orb{position:relative;width:88px;height:88px;border-radius:50%;object-fit:cover;display:block;animation:vozFloat 3.2s ease-in-out infinite;box-shadow:0 10px 32px rgba(99,102,241,.5)}
+#voz-orb.hablando{animation:vozFloat 3.2s ease-in-out infinite,vozHabla .5s ease-in-out infinite}
+@keyframes vozFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
+@keyframes vozGlow{0%,100%{transform:scale(1);opacity:.5}50%{transform:scale(1.2);opacity:.9}}
+@keyframes vozHabla{0%,100%{transform:scale(1)}50%{transform:scale(1.06)}}
 #voz-cerrar{background:none;border:none;color:#64748b;font-size:11px;cursor:pointer;align-self:flex-end}
 #voz-cerrar:hover{color:#94a3b8}
 </style>
@@ -1252,8 +1259,11 @@ function trimChat(container, maxVisible){
 <div id="voz-fab">
   <div id="voz-panel">
     <button id="voz-cerrar" onclick="vozCerrarPanel()">✕ cerrar</button>
+    <div id="voz-orb-wrap">
+      <div id="voz-orb-glow"></div>
+      <img id="voz-orb" src="logos/voz-orb.png" alt="">
+    </div>
     <div id="voz-estado">Listo para hablar</div>
-    <div id="voz-transcripcion"></div>
   </div>
   <button id="voz-btn" title="Hablar con la IA" onclick="vozToggle()">
     <svg viewBox="0 0 24 24"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3zm-1 3a1 1 0 0 1 2 0v8a1 1 0 0 1-2 0V4zm-4 8a5 5 0 0 0 10 0h2a7 7 0 0 1-6 6.93V21h2v2H9v-2h2v-2.07A7 7 0 0 1 5 12H7z"/></svg>
@@ -1279,21 +1289,13 @@ function trimChat(container, maxVisible){
 
   function setEstado(txt){ document.getElementById('voz-estado').textContent = txt; }
 
-  var _lastRol = null;
-  function addTranscripcion(rol, txt){
-    var el = document.getElementById('voz-transcripcion');
-    var pre = rol === 'usuario' ? 'Tu: ' : 'IA: ';
-    if(rol === _lastRol) {
-      // Mismo turno: reemplaza la última línea con el texto acumulado
-      var lines = el.textContent.split('\n');
-      lines[lines.length - 1] = pre + txt;
-      el.textContent = lines.join('\n');
-    } else {
-      // Turno nuevo
-      el.textContent += (el.textContent ? '\n' : '') + pre + txt;
-      _lastRol = rol;
-    }
-    el.scrollTop = el.scrollHeight;
+  // Orbe flotante: se activa la animacion "hablando" mientras haya audio de la IA sonando
+  function vozOrbHablando(on){
+    var wrap = document.getElementById('voz-orb-wrap');
+    var orb = document.getElementById('voz-orb');
+    if(!wrap || !orb) return;
+    wrap.classList.toggle('hablando', !!on);
+    orb.classList.toggle('hablando', !!on);
   }
 
   // Corta de inmediato todo lo que suena o esta programado (igual que _fadeOutAndStop del .52)
@@ -1301,6 +1303,7 @@ function trimChat(container, maxVisible){
     activeSources.forEach(function(s){ try { s.stop(); s.disconnect(); } catch(ex){} });
     activeSources = [];
     nextPlayAt = 0;
+    vozOrbHablando(false);
   }
 
   function resetPlayQueue(){ detenerReproduccionActual(); }
@@ -1328,7 +1331,12 @@ function trimChat(container, maxVisible){
       var startAt = Math.max(now + 0.05, nextPlayAt);
       src.start(startAt);
       activeSources.push(src);
-      src.onended = function(){ var i = activeSources.indexOf(src); if(i >= 0) activeSources.splice(i, 1); };
+      vozOrbHablando(true);
+      src.onended = function(){
+        var i = activeSources.indexOf(src);
+        if(i >= 0) activeSources.splice(i, 1);
+        if(activeSources.length === 0) vozOrbHablando(false);
+      };
       nextPlayAt = startAt + buf.duration;
     } catch(ex){ console.warn('PCM error', ex); }
   }
@@ -1393,7 +1401,6 @@ function trimChat(container, maxVisible){
           var msg = JSON.parse(e.data);
           if(msg.tipo === 'audio' && msg.data) encolarPCM(msg.data, msg.sampleRate || 24000);
           if(msg.tipo === 'interrumpido') detenerReproduccionActual();
-          if(msg.tipo === 'transcripcion' && msg.texto) addTranscripcion(msg.rol || 'asistente', msg.texto);
           if(msg.tipo === 'estado' && msg.texto) setEstado(msg.texto);
           if(msg.tipo === 'sesion_iniciada') setEstado('Habla ahora...');
         } catch(ex){}
