@@ -1300,6 +1300,7 @@ body.rainy-abierta .wsp-bubble{display:none!important}
 #voz-orb-wrap{position:relative;display:flex;align-items:center;justify-content:center;height:150px;margin:38px 0 4px}
 #voz-orb-glow{position:absolute;width:128px;height:128px;border-radius:50%;background:radial-gradient(circle,rgba(99,102,241,.55),rgba(6,182,212,.28) 55%,transparent 75%);filter:blur(7px);animation:vozGlow 2.6s ease-in-out infinite}
 #voz-orb-wrap.hablando #voz-orb-glow{animation:vozGlow 1s ease-in-out infinite}
+#voz-orb-wrap.cargando #voz-orb-glow{animation:vozGlow 1.6s ease-in-out infinite;background:radial-gradient(circle,rgba(6,182,212,.6),rgba(99,102,241,.28) 55%,transparent 75%)}
 #voz-orb{position:relative;width:88px;height:88px;border-radius:50%;object-fit:cover;display:block;animation:vozFloat 3.2s ease-in-out infinite;box-shadow:0 10px 32px rgba(99,102,241,.5)}
 #voz-orb.hablando{animation:vozFloat 3.2s ease-in-out infinite,vozHabla .5s ease-in-out infinite}
 @keyframes vozFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
@@ -1373,6 +1374,15 @@ body.rainy-abierta .wsp-bubble{display:none!important}
   ];
   var vozEnviandoTexto = false;
   var estadoTimer = null;
+  var vozSonidos = {};
+  function vozReproducirSonido(nombre){
+    try {
+      var snd = vozSonidos[nombre];
+      if(!snd){ snd = new Audio('sounds/rainy-' + nombre + '.wav'); snd.volume = 0.45; vozSonidos[nombre] = snd; }
+      snd.currentTime = 0;
+      snd.play().catch(function(){});
+    } catch(ex){}
+  }
 
   // Estado normal (persiste hasta el proximo setEstado)
   function setEstado(txt){
@@ -1607,7 +1617,9 @@ body.rainy-abierta .wsp-bubble{display:none!important}
   function vozIniciar(){
     if(activo) return;
     activo = true;
-    setEstado('Espera un segundo...');
+    setEstado('Cargando Rainy...');
+    document.getElementById('voz-orb-wrap').classList.add('cargando');
+    vozReproducirSonido('conectando');
     document.getElementById('voz-btn').classList.add('escuchando');
 
     navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true } }).then(function(s){
@@ -1616,7 +1628,6 @@ body.rainy-abierta .wsp-bubble{display:none!important}
       ws.binaryType = 'arraybuffer';
 
       ws.onopen = function(){
-        setEstado('Espera un segundo...');
         // Contexto de reproduccion a 24kHz (frecuencia nativa de Gemini Live)
         playCtx = new (window.AudioContext || window.webkitAudioContext)({ sampleRate: 24000 });
         resetPlayQueue();
@@ -1649,7 +1660,11 @@ body.rainy-abierta .wsp-bubble{display:none!important}
           if(msg.tipo === 'audio' && msg.data) encolarPCM(msg.data, msg.sampleRate || 24000);
           if(msg.tipo === 'interrumpido') detenerReproduccionActual();
           if(msg.tipo === 'estado' && msg.texto) setEstado(msg.texto);
-          if(msg.tipo === 'sesion_iniciada'){ setEstadoTemporal('Habla', 1400); }
+          if(msg.tipo === 'sesion_iniciada'){
+            document.getElementById('voz-orb-wrap').classList.remove('cargando');
+            setEstadoTemporal('¡Lista! Habla', 1400);
+            vozReproducirSonido('listo');
+          }
         } catch(ex){}
       };
 
@@ -1665,6 +1680,7 @@ body.rainy-abierta .wsp-bubble{display:none!important}
 
   function vozDetener(){
     activo = false;
+    document.getElementById('voz-orb-wrap').classList.remove('cargando');
     document.getElementById('voz-btn').classList.remove('escuchando');
     setEstado('Listo para hablar');
     resetPlayQueue();
