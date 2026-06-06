@@ -1391,18 +1391,6 @@ body.rainy-abierta .wsp-bubble{display:none!important}
     }, ms);
   }
 
-  // Pequenos sonidos de la libreria de voz (conectando / listo). Si el navegador
-  // bloquea el autoplay, se ignora silenciosamente.
-  var vozSonidos = {};
-  function vozReproducirSonido(nombre){
-    try {
-      var snd = vozSonidos[nombre];
-      if(!snd){ snd = new Audio('sounds/rainy-' + nombre + '.wav'); vozSonidos[nombre] = snd; }
-      snd.currentTime = 0;
-      snd.play().catch(function(){});
-    } catch(ex){}
-  }
-
   // Orbe flotante: se activa la animacion "hablando" mientras haya audio de la IA sonando
   function vozOrbHablando(on){
     var wrap = document.getElementById('voz-orb-wrap');
@@ -1620,7 +1608,6 @@ body.rainy-abierta .wsp-bubble{display:none!important}
     if(activo) return;
     activo = true;
     setEstado('Espera un segundo...');
-    vozReproducirSonido('conectando');
     document.getElementById('voz-btn').classList.add('escuchando');
 
     navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true } }).then(function(s){
@@ -1662,7 +1649,7 @@ body.rainy-abierta .wsp-bubble{display:none!important}
           if(msg.tipo === 'audio' && msg.data) encolarPCM(msg.data, msg.sampleRate || 24000);
           if(msg.tipo === 'interrumpido') detenerReproduccionActual();
           if(msg.tipo === 'estado' && msg.texto) setEstado(msg.texto);
-          if(msg.tipo === 'sesion_iniciada'){ setEstadoTemporal('Habla', 1400); vozReproducirSonido('listo'); }
+          if(msg.tipo === 'sesion_iniciada'){ setEstadoTemporal('Habla', 1400); }
         } catch(ex){}
       };
 
