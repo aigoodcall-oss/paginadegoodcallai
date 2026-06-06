@@ -1253,6 +1253,9 @@ body.rainy-abierta .wsp-bubble{display:none!important}
 #voz-hdr-sub{font-size:10.5px;color:#94a3b8;line-height:1.2;margin-top:2px}
 #voz-cerrar{background:none;border:none;color:#64748b;font-size:18px;line-height:1;cursor:pointer;padding:2px 4px}
 #voz-cerrar:hover{color:#cbd5e1}
+#voz-btn-mic-hdr{flex-shrink:0;border:none;cursor:pointer;border-radius:9px;display:flex;align-items:center;justify-content:center;width:30px;height:30px;background:rgba(255,255,255,.07);color:#94a3b8;transition:background .15s,color .15s}
+#voz-btn-mic-hdr:hover{background:rgba(99,102,241,.3);color:#fff}
+#voz-btn-mic-hdr svg{width:15px;height:15px;fill:currentColor}
 
 /* ── Vista chat de texto (por defecto) ── */
 #voz-vista-chat{display:flex;flex-direction:column;flex:1;min-height:0}
@@ -1267,14 +1270,10 @@ body.rainy-abierta .wsp-bubble{display:none!important}
 @keyframes vozDot{0%,60%,100%{opacity:.3;transform:translateY(0)}30%{opacity:1;transform:translateY(-3px)}}
 
 #voz-chat-input-wrap{position:relative;padding:10px 14px 13px;border-top:1px solid rgba(255,255,255,.07);flex-shrink:0}
-#voz-chat-input{width:100%;resize:none;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:13px;color:#fff;font:inherit;font-size:12.5px;padding:10px 42px 10px 12px;line-height:1.4;min-height:76px;max-height:140px;box-sizing:border-box}
+#voz-chat-input{width:100%;resize:none;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:13px;color:#fff;font:inherit;font-size:12.5px;padding:10px 42px 10px 12px;line-height:1.4;max-height:84px;box-sizing:border-box}
 #voz-chat-input:focus{outline:none;border-color:rgba(99,102,241,.55)}
 #voz-chat-input::placeholder{color:#5b6678}
-#voz-btn-mic,#voz-btn-enviar{position:absolute;right:21px;border:none;cursor:pointer;border-radius:8px;display:flex;align-items:center;justify-content:center;width:27px;height:27px;transition:background .15s,color .15s}
-#voz-btn-mic{top:16px;background:rgba(255,255,255,.07);color:#94a3b8}
-#voz-btn-mic:hover{background:rgba(99,102,241,.3);color:#fff}
-#voz-btn-mic svg{width:14px;height:14px;fill:currentColor}
-#voz-btn-enviar{bottom:19px;background:linear-gradient(135deg,#06b6d4,#6366f1);color:#fff}
+#voz-btn-enviar{position:absolute;right:21px;bottom:19px;border:none;cursor:pointer;border-radius:8px;display:flex;align-items:center;justify-content:center;width:27px;height:27px;transition:background .15s,color .15s;background:linear-gradient(135deg,#06b6d4,#6366f1);color:#fff}
 #voz-btn-enviar:hover{filter:brightness(1.12)}
 #voz-btn-enviar svg{width:13px;height:13px;fill:currentColor}
 
@@ -1304,6 +1303,9 @@ body.rainy-abierta .wsp-bubble{display:none!important}
         <div id="voz-hdr-nombre">Rainy</div>
         <div id="voz-hdr-sub">Asistente IA · Good Call AI</div>
       </div>
+      <button id="voz-btn-mic-hdr" title="Hablar con Rainy por voz" onclick="vozAbrirVoz()" aria-label="Hablar por voz">
+        <svg viewBox="0 0 24 24"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3zm-1 3a1 1 0 0 1 2 0v8a1 1 0 0 1-2 0V4zm-4 8a5 5 0 0 0 10 0h2a7 7 0 0 1-6 6.93V21h2v2H9v-2h2v-2.07A7 7 0 0 1 5 12H7z"/></svg>
+      </button>
       <button id="voz-cerrar" onclick="vozCerrarPanel()" aria-label="Cerrar">✕</button>
     </div>
 
@@ -1312,9 +1314,6 @@ body.rainy-abierta .wsp-bubble{display:none!important}
       <div id="voz-chat-msgs"><div class="voz-msg bot">¡Hola! Soy Rainy 👋 ¿En qué puedo ayudarte hoy?</div></div>
       <div id="voz-chat-input-wrap">
         <textarea id="voz-chat-input" rows="1" placeholder="Escríbele a Rainy..."></textarea>
-        <button id="voz-btn-mic" title="Hablar con Rainy por voz" onclick="vozAbrirVoz()">
-          <svg viewBox="0 0 24 24"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3zm-1 3a1 1 0 0 1 2 0v8a1 1 0 0 1-2 0V4zm-4 8a5 5 0 0 0 10 0h2a7 7 0 0 1-6 6.93V21h2v2H9v-2h2v-2.07A7 7 0 0 1 5 12H7z"/></svg>
-        </button>
         <button id="voz-btn-enviar" title="Enviar" onclick="vozEnviarTexto()">
           <svg viewBox="0 0 24 24"><path d="m22 2-11 20-3-9-9-3z"/></svg>
         </button>
@@ -1377,6 +1376,18 @@ body.rainy-abierta .wsp-bubble{display:none!important}
       el.style.opacity = '0';
       estadoTimer = setTimeout(function(){ el.textContent = ''; }, 400);
     }, ms);
+  }
+
+  // Pequenos sonidos de la libreria de voz (conectando / listo). Si el navegador
+  // bloquea el autoplay, se ignora silenciosamente.
+  var vozSonidos = {};
+  function vozReproducirSonido(nombre){
+    try {
+      var snd = vozSonidos[nombre];
+      if(!snd){ snd = new Audio('sounds/rainy-' + nombre + '.wav'); vozSonidos[nombre] = snd; }
+      snd.currentTime = 0;
+      snd.play().catch(function(){});
+    } catch(ex){}
   }
 
   // Orbe flotante: se activa la animacion "hablando" mientras haya audio de la IA sonando
@@ -1547,6 +1558,7 @@ body.rainy-abierta .wsp-bubble{display:none!important}
     if(activo) return;
     activo = true;
     setEstado('Espera un segundo...');
+    vozReproducirSonido('conectando');
     document.getElementById('voz-btn').classList.add('escuchando');
 
     navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true } }).then(function(s){
@@ -1588,7 +1600,7 @@ body.rainy-abierta .wsp-bubble{display:none!important}
           if(msg.tipo === 'audio' && msg.data) encolarPCM(msg.data, msg.sampleRate || 24000);
           if(msg.tipo === 'interrumpido') detenerReproduccionActual();
           if(msg.tipo === 'estado' && msg.texto) setEstado(msg.texto);
-          if(msg.tipo === 'sesion_iniciada') setEstadoTemporal('Habla', 1400);
+          if(msg.tipo === 'sesion_iniciada'){ setEstadoTemporal('Habla', 1400); vozReproducirSonido('listo'); }
         } catch(ex){}
       };
 
