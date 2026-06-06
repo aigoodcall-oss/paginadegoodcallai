@@ -1245,7 +1245,7 @@ body.wsp-abierto #voz-fab{display:none!important}
 #voz-btn.escuchando{animation:vozPulse 1s ease-in-out infinite}
 @keyframes vozPulse{0%,100%{box-shadow:0 4px 20px rgba(99,102,241,.5)}50%{box-shadow:0 4px 38px rgba(99,102,241,.95)}}
 
-#voz-panel{width:340px;height:500px;background:rgba(6,10,20,.97);border:1px solid rgba(99,102,241,.4);border-radius:16px;display:none;flex-direction:column;overflow:hidden}
+#voz-panel{width:340px;height:420px;background:rgba(6,10,20,.97);border:1px solid rgba(99,102,241,.4);border-radius:16px;display:none;flex-direction:column;overflow:hidden}
 /* Mientras Rainy esta abierta, la burbuja de WhatsApp no debe aparecer encima */
 body.rainy-abierta .wsp-bubble{display:none!important}
 #voz-panel.open{display:flex}
@@ -1257,9 +1257,6 @@ body.rainy-abierta .wsp-bubble{display:none!important}
 #voz-hdr-sub{font-size:10.5px;color:#94a3b8;line-height:1.2;margin-top:2px}
 #voz-cerrar{background:none;border:none;color:#64748b;font-size:18px;line-height:1;cursor:pointer;padding:2px 4px}
 #voz-cerrar:hover{color:#cbd5e1}
-#voz-btn-mic-hdr{flex-shrink:0;border:none;cursor:pointer;border-radius:9px;display:flex;align-items:center;justify-content:center;width:30px;height:30px;background:rgba(255,255,255,.07);color:#94a3b8;transition:background .15s,color .15s}
-#voz-btn-mic-hdr:hover{background:rgba(99,102,241,.3);color:#fff}
-#voz-btn-mic-hdr svg{width:15px;height:15px;fill:currentColor}
 
 /* ── Vista chat de texto (por defecto) ── */
 #voz-vista-chat{display:flex;flex-direction:column;flex:1;min-height:0}
@@ -1314,9 +1311,6 @@ body.rainy-abierta .wsp-bubble{display:none!important}
         <div id="voz-hdr-nombre">Rainy</div>
         <div id="voz-hdr-sub">Asistente IA · Good Call AI</div>
       </div>
-      <button id="voz-btn-mic-hdr" title="Hablar con Rainy por voz" onclick="vozAbrirVoz()" aria-label="Hablar por voz">
-        <svg viewBox="0 0 24 24"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3zm-1 3a1 1 0 0 1 2 0v8a1 1 0 0 1-2 0V4zm-4 8a5 5 0 0 0 10 0h2a7 7 0 0 1-6 6.93V21h2v2H9v-2h2v-2.07A7 7 0 0 1 5 12H7z"/></svg>
-      </button>
       <button id="voz-cerrar" onclick="vozCerrarPanel()" aria-label="Cerrar">✕</button>
     </div>
 
