@@ -1273,6 +1273,7 @@ function trimChat(container, maxVisible){
   var stream = null;
   var activo = false;
   var nextPlayAt = 0;  // scheduling secuencial — igual que jitter buffer del .52
+  var activeSources = [];  // buffers sonando/programados — para poder cortarlos en una interrupcion
   var PARTIDA_ID = 16;
   var WS_URL = 'wss://crm.goodcallai.net/ws/voz-live?partidaId=' + PARTIDA_ID;
 
@@ -1295,7 +1296,14 @@ function trimChat(container, maxVisible){
     el.scrollTop = el.scrollHeight;
   }
 
-  function resetPlayQueue(){ nextPlayAt = 0; }
+  // Corta de inmediato todo lo que suena o esta programado (igual que _fadeOutAndStop del .52)
+  function detenerReproduccionActual(){
+    activeSources.forEach(function(s){ try { s.stop(); s.disconnect(); } catch(ex){} });
+    activeSources = [];
+    nextPlayAt = 0;
+  }
+
+  function resetPlayQueue(){ detenerReproduccionActual(); }
 
   // Reproduce PCM 16-bit encadenando chunks sin gaps ni explosiones
   function encolarPCM(b64, sampleRate){
@@ -1313,11 +1321,13 @@ function trimChat(container, maxVisible){
       var src = playCtx.createBufferSource();
       src.buffer = buf;
       src.connect(playCtx.destination);
-      // Encadenar secuencialmente; si la cola se fue >1.5s adelante, recortar
+      // Encadenar secuencialmente; si la cola se fue >1.5s adelante, cortar lo viejo (no solo mover el puntero)
       var now = playCtx.currentTime;
-      if(nextPlayAt > now + 1.5) nextPlayAt = now + 0.05;
+      if(nextPlayAt > now + 1.5) detenerReproduccionActual();
       var startAt = Math.max(now + 0.05, nextPlayAt);
       src.start(startAt);
+      activeSources.push(src);
+      src.onended = function(){ var i = activeSources.indexOf(src); if(i >= 0) activeSources.splice(i, 1); };
       nextPlayAt = startAt + buf.duration;
     } catch(ex){ console.warn('PCM error', ex); }
   }
@@ -1381,6 +1391,7 @@ function trimChat(container, maxVisible){
         try {
           var msg = JSON.parse(e.data);
           if(msg.tipo === 'audio' && msg.data) encolarPCM(msg.data, msg.sampleRate || 24000);
+          if(msg.tipo === 'interrumpido') detenerReproduccionActual();
           if(msg.tipo === 'transcripcion' && msg.texto) addTranscripcion(msg.rol || 'asistente', msg.texto);
           if(msg.tipo === 'estado' && msg.texto) setEstado(msg.texto);
           if(msg.tipo === 'sesion_iniciada') setEstado('Habla ahora...');
