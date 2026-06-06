@@ -1236,7 +1236,7 @@ function trimChat(container, maxVisible){
 </script>
   <script src="js/main.js"></script>
 
-<!-- VOZ PREVIEW — solo visible si localStorage.getItem('goodcall_voz') === '1' -->
+<!-- VOZ PREVIEW — Rainy, asistente de voz IA -->
 <style>
 #voz-fab{position:fixed;bottom:104px;right:28px;z-index:99999;display:none;flex-direction:column;align-items:flex-end;gap:10px}
 #voz-fab.visible{display:flex}
@@ -1353,7 +1353,6 @@ body.rainy-abierta .wsp-bubble{display:none!important}
 
 <script>
 (function(){
-  if(localStorage.getItem('goodcall_voz') !== '1') return;
   document.getElementById('voz-fab').classList.add('visible');
 
   var ws = null;
