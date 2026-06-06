@@ -1215,10 +1215,12 @@ function trimChat(container, maxVisible){
   function openBubble(){
     if(!bubble) return;
     bubble.classList.add('show');
+    if(!document.body.classList.contains('rainy-abierta')) document.body.classList.add('wsp-abierto');
     if(notif) notif.classList.add('hidden');
   }
   function closeBubble(){
     if(bubble) bubble.classList.remove('show');
+    document.body.classList.remove('wsp-abierto');
   }
   function toggleBubble(){
     if(!bubble) return;
@@ -1235,13 +1237,15 @@ function trimChat(container, maxVisible){
 <style>
 #voz-fab{position:fixed;bottom:104px;right:28px;z-index:99999;display:none;flex-direction:column;align-items:flex-end;gap:10px}
 #voz-fab.visible{display:flex}
+/* Mientras la burbuja de WhatsApp esta abierta, tapa el icono de Rainy (y viceversa) */
+body.wsp-abierto #voz-fab{display:none!important}
 #voz-btn{width:60px;height:60px;border-radius:50%;background:linear-gradient(135deg,#06b6d4,#6366f1);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 20px rgba(99,102,241,.5);transition:transform .2s;padding:0;overflow:hidden}
 #voz-btn:hover{transform:scale(1.08)}
 #voz-btn img{width:100%;height:100%;object-fit:cover;display:block}
 #voz-btn.escuchando{animation:vozPulse 1s ease-in-out infinite}
 @keyframes vozPulse{0%,100%{box-shadow:0 4px 20px rgba(99,102,241,.5)}50%{box-shadow:0 4px 38px rgba(99,102,241,.95)}}
 
-#voz-panel{width:380px;max-height:660px;background:rgba(6,10,20,.97);border:1px solid rgba(99,102,241,.4);border-radius:16px;display:none;flex-direction:column;overflow:hidden}
+#voz-panel{width:340px;height:500px;background:rgba(6,10,20,.97);border:1px solid rgba(99,102,241,.4);border-radius:16px;display:none;flex-direction:column;overflow:hidden}
 /* Mientras Rainy esta abierta, la burbuja de WhatsApp no debe aparecer encima */
 body.rainy-abierta .wsp-bubble{display:none!important}
 #voz-panel.open{display:flex}
@@ -1259,7 +1263,7 @@ body.rainy-abierta .wsp-bubble{display:none!important}
 
 /* ── Vista chat de texto (por defecto) ── */
 #voz-vista-chat{display:flex;flex-direction:column;flex:1;min-height:0}
-#voz-chat-msgs{flex:1;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:8px;max-height:440px;min-height:260px}
+#voz-chat-msgs{flex:1;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:8px}
 .voz-msg{font-size:12.5px;line-height:1.5;padding:8px 12px;border-radius:13px;max-width:85%;word-wrap:break-word}
 .voz-msg.bot{align-self:flex-start;background:rgba(255,255,255,.06);color:#e2e8f0;border-bottom-left-radius:4px}
 .voz-msg.user{align-self:flex-end;background:linear-gradient(135deg,#06b6d4,#6366f1);color:#fff;border-bottom-right-radius:4px}
@@ -1269,13 +1273,20 @@ body.rainy-abierta .wsp-bubble{display:none!important}
 .voz-msg.cargando span:nth-child(3){animation-delay:.3s}
 @keyframes vozDot{0%,60%,100%{opacity:.3;transform:translateY(0)}30%{opacity:1;transform:translateY(-3px)}}
 
-#voz-chat-input-wrap{position:relative;padding:10px 14px 13px;border-top:1px solid rgba(255,255,255,.07);flex-shrink:0}
-#voz-chat-input{width:100%;resize:none;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:13px;color:#fff;font:inherit;font-size:12.5px;padding:10px 42px 10px 12px;line-height:1.4;max-height:84px;box-sizing:border-box}
+#voz-chat-input-wrap{display:flex;align-items:flex-end;gap:6px;padding:10px 14px 13px;border-top:1px solid rgba(255,255,255,.07);flex-shrink:0}
+#voz-chat-input{flex:1;resize:none;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:13px;color:#fff;font:inherit;font-size:12.5px;padding:10px 12px;line-height:1.4;max-height:84px;box-sizing:border-box}
 #voz-chat-input:focus{outline:none;border-color:rgba(99,102,241,.55)}
 #voz-chat-input::placeholder{color:#5b6678}
-#voz-btn-enviar{position:absolute;right:21px;bottom:19px;border:none;cursor:pointer;border-radius:8px;display:flex;align-items:center;justify-content:center;width:27px;height:27px;transition:background .15s,color .15s;background:linear-gradient(135deg,#06b6d4,#6366f1);color:#fff}
-#voz-btn-enviar:hover{filter:brightness(1.12)}
-#voz-btn-enviar svg{width:13px;height:13px;fill:currentColor}
+#voz-btn-dictar,#voz-btn-accion{flex-shrink:0;border:none;cursor:pointer;border-radius:50%;display:flex;align-items:center;justify-content:center;width:30px;height:30px;margin-bottom:1px;transition:background .15s,color .15s}
+#voz-btn-dictar svg,#voz-btn-accion svg{width:14px;height:14px;fill:currentColor}
+#voz-btn-dictar{background:rgba(255,255,255,.07);color:#94a3b8}
+#voz-btn-dictar:hover{background:rgba(99,102,241,.3);color:#fff}
+#voz-btn-dictar.activo{background:rgba(239,68,68,.22);color:#f87171}
+#voz-btn-accion{background:linear-gradient(135deg,#06b6d4,#6366f1);color:#fff}
+#voz-btn-accion:hover{filter:brightness(1.12)}
+#voz-icon-enviar{display:none}
+#voz-chat-input-wrap.tiene-texto #voz-icon-ondas{display:none}
+#voz-chat-input-wrap.tiene-texto #voz-icon-enviar{display:block}
 
 /* ── Vista voz (orbe) ── */
 #voz-vista-voz{display:none;flex-direction:column;padding:8px 16px 20px;flex:1}
@@ -1314,8 +1325,12 @@ body.rainy-abierta .wsp-bubble{display:none!important}
       <div id="voz-chat-msgs"><div class="voz-msg bot">¡Hola! Soy Rainy 👋 ¿En qué puedo ayudarte hoy?</div></div>
       <div id="voz-chat-input-wrap">
         <textarea id="voz-chat-input" rows="1" placeholder="Escríbele a Rainy..."></textarea>
-        <button id="voz-btn-enviar" title="Enviar" onclick="vozEnviarTexto()">
-          <svg viewBox="0 0 24 24"><path d="m22 2-11 20-3-9-9-3z"/></svg>
+        <button id="voz-btn-dictar" title="Dictar por voz" onclick="vozToggleDictado()" aria-label="Dictar por voz">
+          <svg viewBox="0 0 24 24"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3zm-1 3a1 1 0 0 1 2 0v8a1 1 0 0 1-2 0V4zm-4 8a5 5 0 0 0 10 0h2a7 7 0 0 1-6 6.93V21h2v2H9v-2h2v-2.07A7 7 0 0 1 5 12H7z"/></svg>
+        </button>
+        <button id="voz-btn-accion" title="Hablar con Rainy / Enviar" onclick="vozAccionPrincipal()" aria-label="Hablar o enviar mensaje">
+          <svg id="voz-icon-ondas" viewBox="0 0 24 24"><path d="M4 10v4H2v-4h2zm4-3v10H6V7h2zm4-4v18h-2V3h2zm4 4v10h-2V7h2zm4 3v4h-2v-4h2z"/></svg>
+          <svg id="voz-icon-enviar" viewBox="0 0 24 24"><path d="m22 2-11 20-3-9-9-3z"/></svg>
         </button>
       </div>
     </div>
@@ -1476,6 +1491,7 @@ body.rainy-abierta .wsp-bubble{display:none!important}
     vozHistorial.push({ role: 'user', content: texto });
     input.value = '';
     input.style.height = 'auto';
+    document.getElementById('voz-chat-input-wrap').classList.remove('tiene-texto');
     vozEnviandoTexto = true;
     vozMostrarEscribiendo();
 
@@ -1496,6 +1512,51 @@ body.rainy-abierta .wsp-bubble{display:none!important}
     });
   };
 
+  // Boton derecho del chat: si hay texto escrito, envia; si esta vacio, abre el modo de voz (como GPT)
+  window.vozAccionPrincipal = function(){
+    var ta = document.getElementById('voz-chat-input');
+    if(ta && ta.value.trim()) window.vozEnviarTexto();
+    else window.vozAbrirVoz();
+  };
+
+  // Boton de dictado: convierte lo que dices en texto dentro del chat (no abre el modo de voz)
+  var vozReco = null;
+  var vozDictando = false;
+  window.vozToggleDictado = function(){
+    var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+    var btn = document.getElementById('voz-btn-dictar');
+    if(!SR){ alert('Tu navegador no soporta el dictado por voz.'); return; }
+    if(vozDictando){ if(vozReco) vozReco.stop(); return; }
+
+    var ta = document.getElementById('voz-chat-input');
+    var base = (ta.value || '').trim();
+    vozReco = new SR();
+    vozReco.lang = 'es-ES';
+    vozReco.continuous = true;
+    vozReco.interimResults = true;
+
+    vozReco.onresult = function(e){
+      var texto = '';
+      for(var i = 0; i < e.results.length; i++) texto += e.results[i][0].transcript;
+      ta.value = (base ? base + ' ' : '') + texto;
+      ta.dispatchEvent(new Event('input'));
+    };
+    vozReco.onend = function(){
+      vozDictando = false;
+      if(btn) btn.classList.remove('activo');
+    };
+    vozReco.onerror = function(){
+      vozDictando = false;
+      if(btn) btn.classList.remove('activo');
+    };
+
+    try {
+      vozReco.start();
+      vozDictando = true;
+      if(btn) btn.classList.add('activo');
+    } catch(ex){}
+  };
+
   // Enter envia, Shift+Enter hace salto de linea; el textarea crece con el contenido
   (function(){
     var ta = document.getElementById('voz-chat-input');
@@ -1503,6 +1564,9 @@ body.rainy-abierta .wsp-bubble{display:none!important}
     ta.addEventListener('input', function(){
       ta.style.height = 'auto';
       ta.style.height = Math.min(ta.scrollHeight, 84) + 'px';
+      var wrap = document.getElementById('voz-chat-input-wrap');
+      if(ta.value.trim()) wrap.classList.add('tiene-texto');
+      else wrap.classList.remove('tiene-texto');
     });
     ta.addEventListener('keydown', function(e){
       if(e.key === 'Enter' && !e.shiftKey){
