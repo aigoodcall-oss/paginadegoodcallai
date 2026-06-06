@@ -1321,9 +1321,10 @@ function trimChat(container, maxVisible){
       var src = playCtx.createBufferSource();
       src.buffer = buf;
       src.connect(playCtx.destination);
-      // Encadenar secuencialmente; si la cola se fue >1.5s adelante, cortar lo viejo (no solo mover el puntero)
+      // Encadenar secuencialmente, sin recortes: igual que el jitter buffer del .52, dejamos que la
+      // cola crezca y se reproduzca a ritmo real — cortar a mitad de un buffer suena entrecortado y
+      // se come palabras. Lo unico que debe vaciar la cola es una interrupcion real (interrumpido).
       var now = playCtx.currentTime;
-      if(nextPlayAt > now + 1.5) detenerReproduccionActual();
       var startAt = Math.max(now + 0.05, nextPlayAt);
       src.start(startAt);
       activeSources.push(src);
