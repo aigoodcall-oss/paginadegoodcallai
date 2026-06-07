@@ -32,19 +32,19 @@
 [data-theme="light"] .hero-bg{opacity:.3}
 [data-theme="light"] .logo-dark{display:none}/* === LIGHT MODE BLUE GRADIENT ACCENTS === */
 [data-theme="light"] .features-section,
-[data-theme="light"] .flow-section {
-  background: linear-gradient(135deg, #0ea5e9 0%, #2563eb 100%);
+[data-theme="light"] #flujo-vivo {
+  background: linear-gradient(135deg, #0ea5e9 0%, #1d4ed8 50%, #1e3a8a 100%) !important;
   position: relative;
 }
 [data-theme="light"] .features-section .sec-h2,
-[data-theme="light"] .flow-section .sec-h2 { color: #ffffff; }
+[data-theme="light"] #flujo-vivo .sec-h2 { color: #ffffff; }
 [data-theme="light"] .features-section .sec-p,
-[data-theme="light"] .flow-section .sec-p { color: rgba(255, 255, 255, 0.85); }
+[data-theme="light"] #flujo-vivo .sec-p { color: rgba(255, 255, 255, 0.85); }
 [data-theme="light"] .features-section .eyebrow,
-[data-theme="light"] .flow-section .eyebrow { color: #bae6fd !important; }
+[data-theme="light"] #flujo-vivo .eyebrow { color: #bae6fd !important; }
 [data-theme="light"] .features-section em,
-[data-theme="light"] .flow-section em {
-  background: linear-gradient(90deg, #bae6fd, #e0f2fe);
+[data-theme="light"] #flujo-vivo em {
+  background: linear-gradient(90deg, #7dd3fc, #e0f2fe);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -55,9 +55,9 @@
 }
 
 /* Fixes for Flow Section labels on blue background */
-[data-theme="light"] .flow-section .fs-label { color: #ffffff; }
-[data-theme="light"] .flow-section .flow-line { border-top-color: rgba(255,255,255,0.25); }
-[data-theme="light"] .flow-section .flow-line-text { color: rgba(255,255,255,0.8); background: transparent; }
+[data-theme="light"] #flujo-vivo .fs-label { color: #ffffff; }
+[data-theme="light"] #flujo-vivo .flow-line { border-top-color: rgba(255,255,255,0.25); }
+[data-theme="light"] #flujo-vivo .flow-line-text { color: rgba(255,255,255,0.8); background: transparent; }
 
 /* End of light mode styling */[data-theme="light"] .logo-light{display:block}
 
