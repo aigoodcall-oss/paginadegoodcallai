@@ -1,0 +1,200 @@
+[2026-05-23T19:53:33.407Z] [INFO] [WEBHOOK] Mensaje acumulado (debounce 14s): +51965432443 -> +51987312687
+[2026-05-23T19:53:33.408Z] [INFO] [WEBHOOK] Ada guardia programada en 40s para: +51965432443
+[2026-05-23T19:53:48.211Z] [INFO] [WEBHOOK] Mensaje duplicado ignorado (ya procesado): 6a1205cb1236577313491723
+[2026-05-23T19:53:48.926Z] [INFO] [WEBHOOK] Mensaje acumulado (debounce 14s): +51940265351 -> +51920306928
+[2026-05-23T19:53:48.927Z] [INFO] [WEBHOOK] Ada guardia programada en 40s para: +51940265351
+[2026-05-23T19:54:16.691Z] [INFO] [WEBHOOK] Evento ignorado: no es mensaje entrante de WhatsApp
+[2026-05-23T19:54:27.077Z] [INFO] [WEBHOOK] Mensaje acumulado (debounce 14s): +51965432443 -> +51987312687
+[2026-05-23T19:54:27.078Z] [INFO] [WEBHOOK] Ada guardia programada en 40s para: +51965432443
+[2026-05-23T19:55:31.416Z] [INFO] [WEBHOOK] Evento ignorado: no es mensaje entrante de WhatsApp
+[2026-05-23T19:55:33.534Z] [INFO] [WEBHOOK] Evento ignorado: no es mensaje entrante de WhatsApp
+[2026-05-23T19:55:33.609Z] [INFO] [WEBHOOK] Evento ignorado: no es mensaje entrante de WhatsApp
+[2026-05-23T19:55:33.801Z] [INFO] [WEBHOOK] Evento ignorado: no es mensaje entrante de WhatsApp
+[2026-05-23T19:55:34.367Z] [INFO] [WEBHOOK] Evento ignorado: no es mensaje entrante de WhatsApp
+[2026-05-23T19:55:34.394Z] [INFO] [WEBHOOK] Evento ignorado: no es mensaje entrante de WhatsApp
+[2026-05-23T19:55:34.514Z] [INFO] [WEBHOOK] Evento ignorado: no es mensaje entrante de WhatsApp
+[2026-05-23T19:55:34.770Z] [INFO] [WEBHOOK] Evento ignorado: no es mensaje entrante de WhatsApp
+[2026-05-23T19:55:35.179Z] [INFO] [WEBHOOK] Evento ignorado: no es mensaje entrante de WhatsApp
+[2026-05-23T19:56:00.808Z] [INFO] [WEBHOOK] Evento ignorado: no es mensaje entrante de WhatsApp
+[2026-05-23T19:56:01.492Z] [INFO] [WEBHOOK] Evento ignorado: no es mensaje entrante de WhatsApp
+[2026-05-23T19:56:02.399Z] [INFO] [WEBHOOK] Evento ignorado: no es mensaje entrante de WhatsApp
+[2026-05-23T19:57:06.259Z] [INFO] [WEBHOOK] Mensaje acumulado (debounce 14s): +51965432443 -> +51987312687
+[2026-05-23T19:57:06.260Z] [INFO] [WEBHOOK] Ada guardia programada en 40s para: +51965432443
+[2026-05-23T19:57:37.086Z] [INFO] [WEBHOOK] Evento ignorado: no es mensaje entrante de WhatsApp
+[2026-05-23T19:57:37.479Z] [INFO] [WEBHOOK] Evento ignorado: no es mensaje entrante de WhatsApp
+[2026-05-23T19:57:37.939Z] [INFO] [WEBHOOK] Evento ignorado: no es mensaje entrante de WhatsApp
+[2026-05-23T19:58:22.240Z] [INFO] [WEBHOOK] Mensaje acumulado (debounce 14s): +51990896228 -> +51987312687
+[2026-05-23T19:58:22.241Z] [INFO] [WEBHOOK] Ada guardia programada en 40s para: +51990896228
+[2026-05-23T19:58:31.544Z] [INFO] [WEBHOOK] Evento ignorado: no es mensaje entrante de WhatsApp
+[2026-05-23T19:58:51.046Z] [INFO] [WEBHOOK] Evento ignorado: no es mensaje entrante de WhatsApp
+[2026-05-23T19:58:51.297Z] [INFO] [WEBHOOK] Evento ignorado: no es mensaje entrante de WhatsApp
+[2026-05-23T19:58:51.336Z] [INFO] [WEBHOOK] Evento ignorado: no es mensaje entrante de WhatsApp
+[2026-05-23T19:59:01.303Z] [INFO] [WEBHOOK] Evento ignorado: no es mensaje entrante de WhatsApp
+[2026-05-23T19:59:18.664Z] [INFO] [WEBHOOK] Mensaje acumulado (debounce 14s): +51965432443 -> +51987312687
+[2026-05-23T19:59:18.665Z] [INFO] [WEBHOOK] Ada guardia programada en 40s para: +51965432443
+[2026-05-23T19:59:47.852Z] [INFO] [WEBHOOK] Evento ignorado: no es mensaje entrante de WhatsApp
+[2026-05-23T19:59:48.316Z] [INFO] [WEBHOOK] Evento ignorado: no es mensaje entrante de WhatsApp
+[2026-05-23T19:59:48.352Z] [INFO] [WEBHOOK] Evento ignorado: no es mensaje entrante de WhatsApp
+[2026-05-23T20:02:15.130Z] [INFO] [WEBHOOK] Mensaje acumulado (debounce 14s): +51910791365 -> +51902066548
+[2026-05-23T20:02:15.131Z] [INFO] [WEBHOOK] Ada guardia programada en 40s para: +51910791365
+[2026-05-23T20:02:19.644Z] [INFO] [WEBHOOK] Mensaje acumulado (debounce 14s): +51910791365 -> +51902066548
+[2026-05-23T20:02:19.644Z] [INFO] [WEBHOOK] Ada guardia programada en 40s para: +51910791365
+[2026-05-23T20:02:21.886Z] [INFO] [WEBHOOK] Mensaje acumulado (debounce 14s): +51910791365 -> +51902066548
+[2026-05-23T20:02:21.887Z] [INFO] [WEBHOOK] Ada guardia programada en 40s para: +51910791365
+[2026-05-23T20:02:26.929Z] [INFO] [WEBHOOK] Mensaje acumulado (debounce 14s): +51910791365 -> +51902066548
+[2026-05-23T20:02:26.930Z] [INFO] [WEBHOOK] Ada guardia programada en 40s para: +51910791365
+[2026-05-23T20:02:44.590Z] [INFO] [WEBHOOK] Evento ignorado: no es mensaje entrante de WhatsApp
+[2026-05-23T20:04:20.129Z] [INFO] [WEBHOOK] Mensaje acumulado (debounce 14s): +51990896228 -> +51987312687
+[2026-05-23T20:04:20.130Z] [INFO] [WEBHOOK] Ada guardia programada en 40s para: +51990896228
+[2026-05-23T20:04:23.180Z] [INFO] [WEBHOOK] Mensaje acumulado (debounce 14s): +51965432443 -> +51987312687
+[2026-05-23T20:04:23.181Z] [INFO] [WEBHOOK] Ada guardia programada en 40s para: +51965432443
+[2026-05-23T20:04:43.999Z] [INFO] [WEBHOOK] Evento ignorado: no es mensaje entrante de WhatsApp
+[2026-05-23T20:04:51.231Z] [INFO] [WEBHOOK] Evento ignorado: no es mensaje entrante de WhatsApp
+[2026-05-23T20:04:51.484Z] [INFO] [WEBHOOK] Evento ignorado: no es mensaje entrante de WhatsApp
+[2026-05-23T20:04:54.490Z] [INFO] [WEBHOOK] Evento ignorado: no es mensaje entrante de WhatsApp
+[2026-05-23T20:04:55.214Z] [INFO] [WEBHOOK] Evento ignorado: no es mensaje entrante de WhatsApp
+[2026-05-23T20:04:57.753Z] [INFO] [WEBHOOK] Evento ignorado: no es mensaje entrante de WhatsApp
+[2026-05-23T20:05:23.586Z] [INFO] [WEBHOOK] Evento ignorado: no es mensaje entrante de WhatsApp
+[2026-05-23T20:05:45.644Z] [INFO] [WEBHOOK] Mensaje acumulado (debounce 14s): +51990896228 -> +51987312687
+[2026-05-23T20:05:45.645Z] [INFO] [WEBHOOK] Ada guardia programada en 40s para: +51990896228
+[2026-05-23T20:05:47.081Z] [INFO] [WEBHOOK] Mensaje acumulado (debounce 14s): +51990896228 -> +51987312687
+[2026-05-23T20:05:47.082Z] [INFO] [WEBHOOK] Ada guardia programada en 40s para: +51990896228
+[2026-05-23T20:06:00.260Z] [INFO] [WEBHOOK] Mensaje acumulado (debounce 14s): +51990896228 -> +51987312687
+[2026-05-23T20:06:00.261Z] [INFO] [WEBHOOK] Ada guardia programada en 40s para: +51990896228
+[2026-05-23T20:06:32.701Z] [INFO] [WEBHOOK] Evento ignorado: no es mensaje entrante de WhatsApp
+[2026-05-23T20:06:32.824Z] [INFO] [WEBHOOK] Evento ignorado: no es mensaje entrante de WhatsApp
+[2026-05-23T20:06:36.379Z] [INFO] [WEBHOOK] Evento ignorado: no es mensaje entrante de WhatsApp
+[2026-05-23T20:07:53.883Z] [INFO] [WEBHOOK] Evento ignorado: no es mensaje entrante de WhatsApp
+[2026-05-23T20:08:05.580Z] [INFO] [WEBHOOK] Evento ignorado: no es mensaje entrante de WhatsApp
+[2026-05-23T20:08:08.957Z] [INFO] [WEBHOOK] Mensaje acumulado (debounce 14s): +51965432443 -> +51987312687
+[2026-05-23T20:08:08.958Z] [INFO] [WEBHOOK] Ada guardia programada en 40s para: +51965432443
+[2026-05-23T20:08:39.736Z] [INFO] [WEBHOOK] Evento ignorado: no es mensaje entrante de WhatsApp
+[2026-05-23T20:08:39.784Z] [INFO] [WEBHOOK] Evento ignorado: no es mensaje entrante de WhatsApp
+[2026-05-23T20:08:58.627Z] [INFO] [WEBHOOK] Evento ignorado: no es mensaje entrante de WhatsApp
+[2026-05-23T20:09:08.638Z] [INFO] [WEBHOOK] Evento ignorado: no es mensaje entrante de WhatsApp
+[2026-05-23T20:10:22.932Z] [INFO] [WEBHOOK] Evento ignorado: no es mensaje entrante de WhatsApp
+[2026-05-23T20:10:35.010Z] [INFO] [WEBHOOK] Mensaje duplicado ignorado (ya procesado): 6a1209ba590b6950644dca8f
+[2026-05-23T20:10:36.217Z] [INFO] [WEBHOOK] Mensaje acumulado (debounce 14s): +51901733946 -> +51920306928
+[2026-05-23T20:10:36.218Z] [INFO] [WEBHOOK] Ada guardia programada en 40s para: +51901733946
+[2026-05-23T20:10:40.387Z] [INFO] [WEBHOOK] Mensaje duplicado ignorado (ya procesado): 6a1209c012365773134a0cf0
+[2026-05-23T20:10:40.909Z] [INFO] [WEBHOOK] Mensaje acumulado (debounce 14s): +51901733946 -> +51920306928
+[2026-05-23T20:10:40.910Z] [INFO] [WEBHOOK] Ada guardia programada en 40s para: +51901733946
+[2026-05-23T20:15:00.876Z] [INFO] [WEBHOOK] Mensaje acumulado (debounce 14s): +51965432443 -> +51987312687
+[2026-05-23T20:15:00.877Z] [INFO] [WEBHOOK] Ada guardia programada en 40s para: +51965432443
+[2026-05-23T20:15:31.330Z] [INFO] [WEBHOOK] Evento ignorado: no es mensaje entrante de WhatsApp
+[2026-05-23T20:15:31.584Z] [INFO] [WEBHOOK] Evento ignorado: no es mensaje entrante de WhatsApp
+[2026-05-23T20:19:40.966Z] [INFO] [WEBHOOK] Evento ignorado: no es mensaje entrante de WhatsApp
+[2026-05-23T20:19:41.157Z] [INFO] [WEBHOOK] Evento ignorado: no es mensaje entrante de WhatsApp
+[2026-05-23T20:19:46.049Z] [INFO] [WEBHOOK] Evento ignorado: no es mensaje entrante de WhatsApp
+[2026-05-23T20:19:54.936Z] [INFO] [WEBHOOK] Evento ignorado: no es mensaje entrante de WhatsApp
+[2026-05-23T20:19:57.612Z] [INFO] [WEBHOOK] Evento ignorado: no es mensaje entrante de WhatsApp
+[2026-05-23T20:20:06.601Z] [INFO] [WEBHOOK] Evento ignorado: no es mensaje entrante de WhatsApp
+[2026-05-23T20:20:07.058Z] [INFO] [WEBHOOK] Evento ignorado: no es mensaje entrante de WhatsApp
+[2026-05-23T20:20:07.752Z] [INFO] [WEBHOOK] Evento ignorado: no es mensaje entrante de WhatsApp
+[2026-05-23T20:20:17.923Z] [INFO] [WEBHOOK] Evento ignorado: no es mensaje entrante de WhatsApp
+[2026-05-23T20:20:27.694Z] [INFO] [WEBHOOK] Evento ignorado: no es mensaje entrante de WhatsApp
+[2026-05-23T20:20:28.317Z] [INFO] [WEBHOOK] Evento ignorado: no es mensaje entrante de WhatsApp
+[2026-05-23T20:21:05.974Z] [INFO] [WEBHOOK] Evento ignorado: no es mensaje entrante de WhatsApp
+[2026-05-23T20:21:06.517Z] [INFO] [WEBHOOK] Evento ignorado: no es mensaje entrante de WhatsApp
+[2026-05-23T20:21:06.709Z] [INFO] [WEBHOOK] Evento ignorado: no es mensaje entrante de WhatsApp
+[2026-05-23T20:23:17.142Z] [INFO] [WEBHOOK] Mensaje acumulado (debounce 14s): +51990896228 -> +51902066548
+[2026-05-23T20:23:17.143Z] [INFO] [WEBHOOK] Ada guardia programada en 40s para: +51990896228
+[2026-05-23T20:23:18.996Z] [INFO] [WEBHOOK] Mensaje acumulado (debounce 14s): +51990896228 -> +51902066548
+[2026-05-23T20:23:18.996Z] [INFO] [WEBHOOK] Ada guardia programada en 40s para: +51990896228
+[2026-05-23T20:23:20.115Z] [INFO] [WEBHOOK] Mensaje acumulado (debounce 14s): +51990896228 -> +51902066548
+[2026-05-23T20:23:20.115Z] [INFO] [WEBHOOK] Ada guardia programada en 40s para: +51990896228
+[2026-05-23T20:23:27.517Z] [INFO] [WEBHOOK] Mensaje acumulado (debounce 14s): +51990896228 -> +51902066548
+[2026-05-23T20:23:27.518Z] [INFO] [WEBHOOK] Ada guardia programada en 40s para: +51990896228
+[2026-05-23T20:24:31.269Z] [INFO] [WEBHOOK] Evento ignorado: no es mensaje entrante de WhatsApp
+[2026-05-23T20:24:37.416Z] [INFO] [WEBHOOK] Mensaje BLOQUEADO — partida pausada: +51987379579
+[2026-05-23T20:24:44.529Z] [INFO] [WEBHOOK] Mensaje acumulado (debounce 14s): +51990896228 -> +51902066548
+[2026-05-23T20:24:44.530Z] [INFO] [WEBHOOK] Ada guardia programada en 40s para: +51990896228
+[2026-05-23T20:24:49.302Z] [INFO] [WEBHOOK] Mensaje acumulado (debounce 14s): +51990896228 -> +51902066548
+[2026-05-23T20:24:49.303Z] [INFO] [WEBHOOK] Ada guardia programada en 40s para: +51990896228
+[2026-05-23T20:25:54.649Z] [INFO] [WEBHOOK] Evento ignorado: no es mensaje entrante de WhatsApp
+[2026-05-23T20:26:33.355Z] [INFO] [WEBHOOK] Mensaje acumulado (debounce 14s): +51990896228 -> +51902066548
+[2026-05-23T20:26:33.356Z] [INFO] [WEBHOOK] Ada guardia programada en 40s para: +51990896228
+[2026-05-23T20:26:35.455Z] [INFO] [WEBHOOK] Mensaje acumulado (debounce 14s): +51990896228 -> +51902066548
+[2026-05-23T20:26:35.455Z] [INFO] [WEBHOOK] Ada guardia programada en 40s para: +51990896228
+[2026-05-23T20:26:40.163Z] [INFO] [WEBHOOK] Mensaje acumulado (debounce 14s): +51990896228 -> +51902066548
+[2026-05-23T20:26:40.164Z] [INFO] [WEBHOOK] Ada guardia programada en 40s para: +51990896228
+[2026-05-23T20:30:04.594Z] [INFO] [WEBHOOK] Evento ignorado: no es mensaje entrante de WhatsApp
+[2026-05-23T20:30:24.313Z] [INFO] [WEBHOOK] Evento ignorado: no es mensaje entrante de WhatsApp
+[2026-05-23T20:30:31.469Z] [INFO] [WEBHOOK] Evento ignorado: no es mensaje entrante de WhatsApp
+[2026-05-23T20:30:48.326Z] [INFO] [WEBHOOK] Evento ignorado: no es mensaje entrante de WhatsApp
+[2026-05-23T20:30:57.005Z] [INFO] [WEBHOOK] Evento ignorado: no es mensaje entrante de WhatsApp
+[2026-05-23T20:31:06.713Z] [INFO] [WEBHOOK] Evento ignorado: no es mensaje entrante de WhatsApp
+[2026-05-23T20:33:52.561Z] [INFO] [WEBHOOK] Mensaje acumulado (debounce 14s): +51910791365 -> +51902066548
+[2026-05-23T20:33:52.563Z] [INFO] [WEBHOOK] Ada guardia programada en 40s para: +51910791365
+[2026-05-23T20:33:53.709Z] [INFO] [WEBHOOK] Evento ignorado: no es mensaje entrante de WhatsApp
+[2026-05-23T20:34:10.382Z] [INFO] [WEBHOOK] Evento ignorado: no es mensaje entrante de WhatsApp
+[2026-05-23T20:34:17.732Z] [INFO] [WEBHOOK] Evento ignorado: no es mensaje entrante de WhatsApp
+[2026-05-23T20:40:36.449Z] [INFO] [WEBHOOK] Evento ignorado: no es mensaje entrante de WhatsApp
+[2026-05-23T20:41:20.252Z] [INFO] [WEBHOOK] Mensaje acumulado (debounce 14s): +51965432443 -> +51987312687
+[2026-05-23T20:41:20.254Z] [INFO] [WEBHOOK] Ada guardia programada en 40s para: +51965432443
+[2026-05-23T20:41:49.476Z] [INFO] [WEBHOOK] Evento ignorado: no es mensaje entrante de WhatsApp
+[2026-05-23T20:41:49.578Z] [INFO] [WEBHOOK] Evento ignorado: no es mensaje entrante de WhatsApp
+[2026-05-23T20:41:52.258Z] [INFO] [WEBHOOK] Evento ignorado: no es mensaje entrante de WhatsApp
+[2026-05-23T21:06:06.480Z] [INFO] [WEBHOOK] Evento ignorado: no es mensaje entrante de WhatsApp
+[2026-05-23T21:06:15.734Z] [INFO] [WEBHOOK] Evento ignorado: no es mensaje entrante de WhatsApp
+[2026-05-23T21:06:33.720Z] [INFO] [WEBHOOK] Evento ignorado: no es mensaje entrante de WhatsApp
+[2026-05-23T21:06:50.103Z] [INFO] [WEBHOOK] Evento ignorado: no es mensaje entrante de WhatsApp
+[2026-05-23T21:07:01.383Z] [INFO] [WEBHOOK] Evento ignorado: no es mensaje entrante de WhatsApp
+[2026-05-23T21:07:06.185Z] [INFO] [WEBHOOK] Evento ignorado: no es mensaje entrante de WhatsApp
+[2026-05-23T21:07:10.262Z] [INFO] [WEBHOOK] Evento ignorado: no es mensaje entrante de WhatsApp
+[2026-05-23T21:08:20.182Z] [INFO] [WEBHOOK] Evento ignorado: no es mensaje entrante de WhatsApp
+[2026-05-23T21:08:24.124Z] [INFO] [WEBHOOK] Evento ignorado: no es mensaje entrante de WhatsApp
+[2026-05-23T21:08:32.458Z] [INFO] [WEBHOOK] Evento ignorado: no es mensaje entrante de WhatsApp
+[2026-05-23T21:08:39.348Z] [INFO] [WEBHOOK] Evento ignorado: no es mensaje entrante de WhatsApp
+[2026-05-23T21:08:44.030Z] [INFO] [WEBHOOK] Evento ignorado: no es mensaje entrante de WhatsApp
+[2026-05-23T21:08:48.817Z] [INFO] [WEBHOOK] Evento ignorado: no es mensaje entrante de WhatsApp
+[2026-05-23T21:08:53.901Z] [INFO] [WEBHOOK] Evento ignorado: no es mensaje entrante de WhatsApp
+[2026-05-23T21:08:58.922Z] [INFO] [WEBHOOK] Evento ignorado: no es mensaje entrante de WhatsApp
+[2026-05-23T21:09:06.920Z] [INFO] [WEBHOOK] Evento ignorado: no es mensaje entrante de WhatsApp
+[2026-05-23T21:09:14.902Z] [INFO] [WEBHOOK] Evento ignorado: no es mensaje entrante de WhatsApp
+[2026-05-23T21:09:18.634Z] [INFO] [WEBHOOK] Evento ignorado: no es mensaje entrante de WhatsApp
+[SISTEMA] Iniciando RE4-SYSTEM PRO...
+(node:1) Warning: NodeVersionSupportWarning: The AWS SDK for JavaScript (v3)
+versions published after the first week of January 2027
+will require node >=22. You are running node v20.20.2.
+
+To continue receiving updates to AWS services, bug fixes,
+and security updates please upgrade to node >=22.
+
+More information can be found at: https://a.co/c895JFp
+(Use `node --trace-warnings ...` to show where the warning was created)
+[SISTEMA] Motor activo en puerto 3001
+[SISTEMA] Rainy esta vigilando...
+[2026-05-23T21:16:14.589Z] [INFO] [WEBHOOK] Evento ignorado: no es mensaje entrante de WhatsApp
+[2026-05-23T21:16:26.362Z] [INFO] [WEBHOOK] Evento ignorado: no es mensaje entrante de WhatsApp
+[2026-05-23T21:20:46.252Z] [INFO] [WEBHOOK] Evento ignorado: no es mensaje entrante de WhatsApp
+[2026-05-23T21:20:47.135Z] [INFO] [WEBHOOK] Evento ignorado: no es mensaje entrante de WhatsApp
+[2026-05-23T21:20:52.788Z] [INFO] [WEBHOOK] Evento ignorado: no es mensaje entrante de WhatsApp
+[2026-05-23T21:20:59.563Z] [INFO] [WEBHOOK] Evento ignorado: no es mensaje entrante de WhatsApp
+[2026-05-23T21:21:02.079Z] [INFO] [WEBHOOK] Evento ignorado: no es mensaje entrante de WhatsApp
+[2026-05-23T21:21:03.809Z] [INFO] [WEBHOOK] Evento ignorado: no es mensaje entrante de WhatsApp
+[2026-05-23T21:21:08.881Z] [INFO] [WEBHOOK] Evento ignorado: no es mensaje entrante de WhatsApp
+[2026-05-23T21:21:12.116Z] [INFO] [WEBHOOK] Evento ignorado: no es mensaje entrante de WhatsApp
+[2026-05-23T21:25:25.408Z] [INFO] [WEBHOOK] Mensaje acumulado (debounce 14s): +51961737795 -> +51902066548
+[2026-05-23T21:25:25.410Z] [INFO] [WEBHOOK] Ada guardia programada en 40s para: +51961737795
+[2026-05-23T21:31:17.519Z] [INFO] [WEBHOOK] Evento ignorado: no es mensaje entrante de WhatsApp
+[2026-05-23T21:31:25.370Z] [INFO] [WEBHOOK] Evento ignorado: no es mensaje entrante de WhatsApp
+[SISTEMA] Iniciando RE4-SYSTEM PRO...
+(node:1) Warning: NodeVersionSupportWarning: The AWS SDK for JavaScript (v3)
+versions published after the first week of January 2027
+will require node >=22. You are running node v20.20.2.
+
+To continue receiving updates to AWS services, bug fixes,
+and security updates please upgrade to node >=22.
+
+More information can be found at: https://a.co/c895JFp
+(Use `node --trace-warnings ...` to show where the warning was created)
+[SISTEMA] Motor activo en puerto 3001
+[SISTEMA] Rainy esta vigilando...
+[2026-05-23T21:59:29.523Z] [INFO] [WEBHOOK] Mensaje BLOQUEADO — partida pausada: +51987379579
+[2026-05-23T22:08:49.496Z] [INFO] [WEBHOOK] Mensaje BLOQUEADO — partida pausada: +51987379579
+[2026-05-23T22:14:04.044Z] [INFO] [WEBHOOK] Mensaje BLOQUEADO — partida pausada: +51987379579
+[2026-05-23T22:14:36.011Z] [INFO] [WEBHOOK] Mensaje BLOQUEADO — partida pausada: +51987379579
+[2026-05-23T22:15:26.448Z] [INFO] [WEBHOOK] Mensaje duplicado ignorado (ya procesado): 6a1226fd1236577313519665
+[2026-05-23T22:15:27.643Z] [INFO] [WEBHOOK] Mensaje acumulado (debounce 14s): +51987498340 -> +51920306928
+[2026-05-23T22:15:27.644Z] [INFO] [WEBHOOK] Ada guardia programada en 40s para: +51987498340
