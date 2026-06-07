@@ -1531,6 +1531,31 @@ body.rainy-abierta .wsp-bubble{display:none!important}
     vozIniciar();
   };
 
+  
+  window.vozToggleVideo = function() {
+    var orbWrap = document.getElementById('voz-orb-wrap');
+    var videoWrap = document.getElementById('voz-video-wrap');
+    var iconCam = document.getElementById('voz-icon-cam');
+    var iconMic = document.getElementById('voz-icon-mic');
+    var estado = document.getElementById('voz-estado');
+    
+    if (videoWrap.style.display === 'none') {
+      orbWrap.style.display = 'none';
+      videoWrap.style.display = 'block';
+      iconCam.style.display = 'none';
+      iconMic.style.display = 'block';
+      estado.innerText = "Video to Video activo";
+      var vid = document.getElementById('voz-video-feed');
+      if(vid) vid.play().catch(function(){});
+    } else {
+      videoWrap.style.display = 'none';
+      orbWrap.style.display = 'flex';
+      iconMic.style.display = 'none';
+      iconCam.style.display = 'block';
+      estado.innerText = "Listo para hablar";
+    }
+  };
+  
   window.vozVolverChat = function(){
     if(activo) vozDetener();
     vozMostrarVistaChat();
