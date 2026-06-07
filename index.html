@@ -1015,12 +1015,11 @@ body.rainy-abierta .wsp-bubble{display:none!important}
         </div>
         
         <div id="voz-video-wrap" style="display:none; position:relative; width:90%; height:240px; margin:15px auto 0; border-radius:12px; overflow:hidden; background:#0f172a; box-shadow:0 10px 30px rgba(0,0,0,0.5); border:1px solid rgba(255,255,255,0.1);">
-          <div style="width:100%; height:100%; display:flex; flex-direction:column; align-items:center; justify-content:center; color:#94a3b8;">
-            <svg width="48" height="48" viewBox="0 0 24 24" fill="currentColor" style="margin-bottom:10px; opacity:0.8;"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
-            <span style="font-weight:700; font-size:0.9rem; color:#fff;">Cámara Activa</span>
-            <span style="font-size:0.75rem; margin-top:4px;">Transmitiendo al asistente...</span>
-            <div style="width:10px; height:10px; background:#ef4444; border-radius:50%; position:absolute; top:12px; right:12px; animation:pulse 1.5s infinite;"></div>
+          <div style="width:100%; height:100%; display:flex; flex-direction:column; align-items:center; justify-content:center; color:#94a3b8; position:relative; z-index:2;">
+            <img src="logos/voz-orb.png" alt="" style="width:80px; height:80px; border-radius:50%; box-shadow:0 10px 32px rgba(99,102,241,.5); animation:vozFloat 3.2s ease-in-out infinite;">
+            <span style="font-size:0.75rem; margin-top:16px;">Transmisión a la IA activa</span>
           </div>
+          <div style="width:10px; height:10px; background:#ef4444; border-radius:50%; position:absolute; top:12px; right:12px; z-index:3; animation:pulse 1.5s infinite;"></div>
         </div>
       <div id="voz-orb-wrap">
         <div id="voz-orb-glow"></div>
@@ -1363,6 +1362,14 @@ body.rainy-abierta .wsp-bubble{display:none!important}
     vozReproducirSonido('conectando');
     document.getElementById('voz-btn').classList.add('escuchando');
 
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+      document.getElementById('voz-orb-wrap').classList.remove('cargando');
+      document.getElementById('voz-btn').classList.remove('escuchando');
+      setEstado('Error de micrófono');
+      activo = false;
+      alert("Tu navegador bloqueó el micrófono porque la página no tiene candado de seguridad (HTTP). En producción (HTTPS) esto funcionará perfectamente.");
+      return;
+    }
     navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true } }).then(function(s){
       stream = s;
       ws = new WebSocket(WS_URL);
