@@ -317,19 +317,13 @@ body.rainy-abierta .wsp-bubble{display:none!important}
         </div>
         
         <div id="voz-video-wrap" style="display:none; position:relative; width:90%; height:240px; margin:15px auto 0; border-radius:12px; overflow:hidden; background:#0f172a; box-shadow:0 10px 30px rgba(0,0,0,0.5); border:1px solid rgba(255,255,255,0.1);">
-          <div style="width:100%; height:100%; display:flex; flex-direction:column; align-items:center; justify-content:center; color:#94a3b8; position:relative; z-index:2;">
+          <video id="voz-user-video" autoplay muted playsinline style="position:absolute; top:0; left:0; width:100%; height:100%; object-fit:cover; z-index:1; display:none; transform:scaleX(-1);"></video>
+          <div id="voz-video-mock" style="width:100%; height:100%; display:flex; flex-direction:column; align-items:center; justify-content:center; color:#94a3b8; position:relative; z-index:2;">
             <img src="logos/voz-orb.png" alt="" style="width:80px; height:80px; border-radius:50%; box-shadow:0 10px 32px rgba(99,102,241,.5); animation:vozFloat 3.2s ease-in-out infinite;">
-            <span style="font-size:0.75rem; margin-top:16px;">Transmisión a la IA activa</span>
+            <span id="voz-video-status-text" style="font-size:0.75rem; margin-top:16px; text-align:center; padding:0 10px;">Solicitando acceso a la cámara...</span>
           </div>
-          <div style="width:10px; height:10px; background:#ef4444; border-radius:50%; position:absolute; top:12px; right:12px; z-index:3; animation:pulse 1.5s infinite;"></div>
+          <div id="voz-video-recording-dot" style="display:none; width:10px; height:10px; background:#ef4444; border-radius:50%; position:absolute; top:12px; right:12px; z-index:3; animation:pulse 1.5s infinite;"></div>
         </div>
-      <div id="voz-orb-wrap">
-        <div id="voz-orb-glow"></div>
-        <img id="voz-orb" src="logos/voz-orb.png" alt="">
-      </div>
-      <div id="voz-estado">Listo para hablar</div>
-    </div>
-  </div>
   <button id="voz-btn" title="Habla o escríbele a Rainy" onclick="vozToggle()">
     <img src="logos/rainy-icon.png" alt="Rainy">
   </button>
@@ -347,6 +341,7 @@ body.rainy-abierta .wsp-bubble{display:none!important}
   var stream = null;
   var audioTimeout = null;
   var videoTimeout = null;
+  var videoStream = null;
   var activo = false;
   var nextPlayAt = 0;  // scheduling secuencial — igual que jitter buffer del .52
   var activeSources = [];  // buffers sonando/programados — para poder cortarlos en una interrupcion
@@ -600,13 +595,44 @@ body.rainy-abierta .wsp-bubble{display:none!important}
     var iconCam = document.getElementById('voz-icon-cam');
     var iconMic = document.getElementById('voz-icon-mic');
     var estado = document.getElementById('voz-estado');
+    var userVideo = document.getElementById('voz-user-video');
+    var videoMock = document.getElementById('voz-video-mock');
+    var recDot = document.getElementById('voz-video-recording-dot');
+    var statusText = document.getElementById('voz-video-status-text');
     
     if (videoWrap.style.display === 'none') {
+      // TURN VIDEO ON
       orbWrap.style.display = 'none';
       videoWrap.style.display = 'block';
       iconCam.style.display = 'none';
       iconMic.style.display = 'block';
-      estado.innerText = "Transmitiendo video...";
+      estado.innerText = "Conectando cámara...";
+      
+      statusText.innerText = "Solicitando acceso a la cámara...";
+      userVideo.style.display = 'none';
+      recDot.style.display = 'none';
+      videoMock.style.display = 'flex';
+
+      // Request actual camera
+      if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+        navigator.mediaDevices.getUserMedia({ video: true }).then(function(stream) {
+            videoStream = stream;
+            userVideo.srcObject = stream;
+            userVideo.style.display = 'block';
+            videoMock.style.display = 'none';
+            recDot.style.display = 'block';
+            estado.innerText = "Transmitiendo video a la IA";
+        }).catch(function(err) {
+            console.error("Camera error:", err);
+            statusText.innerHTML = "Cámara bloqueada.<br>Mostrando imagen de respaldo.";
+            estado.innerText = "Video simulado (cámara no disponible)";
+            recDot.style.display = 'block';
+        });
+      } else {
+         statusText.innerHTML = "Tu navegador no soporta cámara aquí.<br>Mostrando imagen de respaldo.";
+         estado.innerText = "Video simulado";
+         recDot.style.display = 'block';
+      }
       
       clearTimeout(videoTimeout);
       videoTimeout = setTimeout(function() {
@@ -617,6 +643,13 @@ body.rainy-abierta .wsp-bubble{display:none!important}
       }, 300000);
       
     } else {
+      // TURN VIDEO OFF
+      if (videoStream) {
+         videoStream.getTracks().forEach(track => track.stop());
+         videoStream = null;
+      }
+      userVideo.srcObject = null;
+      
       videoWrap.style.display = 'none';
       orbWrap.style.display = 'flex';
       iconMic.style.display = 'none';
@@ -743,6 +776,7 @@ body.rainy-abierta .wsp-bubble{display:none!important}
     if(micCtx) { try { micCtx.close(); } catch(ex){} micCtx = null; }
     if(playCtx) { try { playCtx.close(); } catch(ex){} playCtx = null; }
     if(stream) stream.getTracks().forEach(function(t){ t.stop(); }); stream = null;
+    if(videoStream) { videoStream.getTracks().forEach(function(t){ t.stop(); }); videoStream = null; }
     if(ws) { try { ws.close(); } catch(ex){} } ws = null;
   }
 })();
