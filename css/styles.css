@@ -34,18 +34,18 @@
 [data-theme="light"] .features-section,
 [data-theme="light"] #flujo-vivo,
 [data-theme="light"] .testi-section {
-  background: linear-gradient(135deg, #38bdf8 0%, #0284c7 100%) !important;
+  background: #f8fafc !important; /* Blanco agrisado */
   position: relative;
 }
 [data-theme="light"] .features-section .sec-h2,
 [data-theme="light"] #flujo-vivo .sec-h2,
-[data-theme="light"] .testi-section .sec-h2 { color: #ffffff; }
+[data-theme="light"] .testi-section .sec-h2 { color: var(--ink-1) !important; }
 [data-theme="light"] .features-section .sec-p,
 [data-theme="light"] #flujo-vivo .sec-p,
-[data-theme="light"] .testi-section .sec-p { color: rgba(255, 255, 255, 0.85); }
+[data-theme="light"] .testi-section .sec-p { color: var(--ink-2) !important; }
 [data-theme="light"] .features-section .eyebrow,
 [data-theme="light"] #flujo-vivo .eyebrow,
-[data-theme="light"] .testi-section .eyebrow { color: #ffffff !important; font-size: 1rem !important; font-weight: 900 !important; opacity: 1 !important; }
+[data-theme="light"] .testi-section .eyebrow { color: var(--accent) !important; font-size: 1rem !important; font-weight: 900 !important; opacity: 1 !important; }
 
 [data-theme="light"] .features-section em,
 [data-theme="light"] #flujo-vivo em,
