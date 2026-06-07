@@ -33,7 +33,7 @@
 [data-theme="light"] .logo-dark{display:none}/* === LIGHT MODE BLUE GRADIENT ACCENTS === */
 [data-theme="light"] .features-section,
 [data-theme="light"] #flujo-vivo {
-  background: linear-gradient(135deg, #0ea5e9 0%, #1d4ed8 50%, #1e3a8a 100%) !important;
+  background: linear-gradient(135deg, #06b6d4 0%, #0284c7 100%) !important;
   position: relative;
 }
 [data-theme="light"] .features-section .sec-h2,
