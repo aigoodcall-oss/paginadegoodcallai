@@ -1114,10 +1114,23 @@ body.rainy-abierta .wsp-bubble{display:none!important}
 
     <!-- Vista voz (orbe) -->
     <div id="voz-vista-voz">
-      <button id="voz-volver" onclick="vozVolverChat()">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
-        chat de texto
-      </button>
+      <div style="display:flex; justify-content:space-between; align-items:center; width:100%; padding-right:14px;">
+          <button id="voz-volver" onclick="vozVolverChat()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+            chat de texto
+          </button>
+          <button id="voz-btn-video-toggle" onclick="vozToggleVideo()" style="background:none; border:none; color:#cbd5e1; cursor:pointer; padding:6px; transition:0.2s;" title="Cambiar a Video">
+            <svg id="voz-icon-cam" viewBox="0 0 24 24" fill="currentColor" width="20" height="20"><path d="M15 8v8H5V8h10m1-2H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-3.5l4 4v-11l-4 4V7c0-.55-.45-1-1-1z"/></svg>
+            <svg id="voz-icon-mic" viewBox="0 0 24 24" fill="currentColor" width="20" height="20" style="display:none;"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm5.91-3c-.49 0-.9.36-.98.85C16.52 14.2 14.47 16 12 16s-4.52-1.8-4.93-4.15c-.08-.49-.49-.85-.98-.85-.61 0-1.09.54-1 1.14.49 3 2.89 5.35 5.91 5.78V20c0 .55.45 1 1 1s1-.45 1-1v-2.08c3.02-.43 5.42-2.78 5.91-5.78.1-.6-.39-1.14-1-1.14z"/></svg>
+          </button>
+        </div>
+        
+        <div id="voz-video-wrap" style="display:none; position:relative; width:90%; height:240px; margin:15px auto 0; border-radius:12px; overflow:hidden; background:#000; box-shadow:0 10px 30px rgba(0,0,0,0.5); border:1px solid rgba(255,255,255,0.1);">
+          <video id="voz-video-feed" src="media/demo_llamadas.mp4" autoplay loop muted playsinline style="width:100%; height:100%; object-fit:cover; opacity:0.85;"></video>
+          <div style="position:absolute; bottom:12px; right:12px; width:65px; height:85px; background:#1e293b; border-radius:8px; border:2px solid rgba(255,255,255,0.15); overflow:hidden; display:flex; align-items:center; justify-content:center; box-shadow:0 4px 10px rgba(0,0,0,0.4);">
+             <svg width="32" height="32" viewBox="0 0 24 24" fill="#475569"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+          </div>
+        </div>
       <div id="voz-orb-wrap">
         <div id="voz-orb-glow"></div>
         <img id="voz-orb" src="logos/voz-orb.png" alt="">
@@ -1386,6 +1399,31 @@ body.rainy-abierta .wsp-bubble{display:none!important}
     vozIniciar();
   };
 
+  
+  window.vozToggleVideo = function() {
+    var orbWrap = document.getElementById('voz-orb-wrap');
+    var videoWrap = document.getElementById('voz-video-wrap');
+    var iconCam = document.getElementById('voz-icon-cam');
+    var iconMic = document.getElementById('voz-icon-mic');
+    var estado = document.getElementById('voz-estado');
+    
+    if (videoWrap.style.display === 'none') {
+      orbWrap.style.display = 'none';
+      videoWrap.style.display = 'block';
+      iconCam.style.display = 'none';
+      iconMic.style.display = 'block';
+      estado.innerText = "Video to Video activo";
+      var vid = document.getElementById('voz-video-feed');
+      if(vid) vid.play().catch(function(){});
+    } else {
+      videoWrap.style.display = 'none';
+      orbWrap.style.display = 'flex';
+      iconMic.style.display = 'none';
+      iconCam.style.display = 'block';
+      estado.innerText = "Listo para hablar";
+    }
+  };
+  
   
   window.vozToggleVideo = function() {
     var orbWrap = document.getElementById('voz-orb-wrap');
