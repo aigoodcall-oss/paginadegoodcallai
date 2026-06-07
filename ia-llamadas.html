@@ -1125,10 +1125,12 @@ body.rainy-abierta .wsp-bubble{display:none!important}
           </button>
         </div>
         
-        <div id="voz-video-wrap" style="display:none; position:relative; width:90%; height:240px; margin:15px auto 0; border-radius:12px; overflow:hidden; background:#000; box-shadow:0 10px 30px rgba(0,0,0,0.5); border:1px solid rgba(255,255,255,0.1);">
-          <video id="voz-video-feed" src="media/demo_llamadas.mp4" autoplay loop muted playsinline style="width:100%; height:100%; object-fit:cover; opacity:0.85;"></video>
-          <div style="position:absolute; bottom:12px; right:12px; width:65px; height:85px; background:#1e293b; border-radius:8px; border:2px solid rgba(255,255,255,0.15); overflow:hidden; display:flex; align-items:center; justify-content:center; box-shadow:0 4px 10px rgba(0,0,0,0.4);">
-             <svg width="32" height="32" viewBox="0 0 24 24" fill="#475569"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+        <div id="voz-video-wrap" style="display:none; position:relative; width:90%; height:240px; margin:15px auto 0; border-radius:12px; overflow:hidden; background:#0f172a; box-shadow:0 10px 30px rgba(0,0,0,0.5); border:1px solid rgba(255,255,255,0.1);">
+          <div style="width:100%; height:100%; display:flex; flex-direction:column; align-items:center; justify-content:center; color:#94a3b8;">
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="currentColor" style="margin-bottom:10px; opacity:0.8;"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+            <span style="font-weight:700; font-size:0.9rem; color:#fff;">Cámara Activa</span>
+            <span style="font-size:0.75rem; margin-top:4px;">Transmitiendo al asistente...</span>
+            <div style="width:10px; height:10px; background:#ef4444; border-radius:50%; position:absolute; top:12px; right:12px; animation:pulse 1.5s infinite;"></div>
           </div>
         </div>
       <div id="voz-orb-wrap">
@@ -1153,6 +1155,8 @@ body.rainy-abierta .wsp-bubble{display:none!important}
   var processor = null;
   var source = null;
   var stream = null;
+  var audioTimeout = null;
+  var videoTimeout = null;
   var activo = false;
   var nextPlayAt = 0;  // scheduling secuencial — igual que jitter buffer del .52
   var activeSources = [];  // buffers sonando/programados — para poder cortarlos en una interrupcion
@@ -1412,15 +1416,23 @@ body.rainy-abierta .wsp-bubble{display:none!important}
       videoWrap.style.display = 'block';
       iconCam.style.display = 'none';
       iconMic.style.display = 'block';
-      estado.innerText = "Video to Video activo";
-      var vid = document.getElementById('voz-video-feed');
-      if(vid) vid.play().catch(function(){});
+      estado.innerText = "Transmitiendo video...";
+      
+      clearTimeout(videoTimeout);
+      videoTimeout = setTimeout(function() {
+        if(window.activo) {
+          window.vozToggleVideo(); // switch back to audio
+          alert("Límite de 5 minutos alcanzado para Video-to-Video.");
+        }
+      }, 300000);
+      
     } else {
       videoWrap.style.display = 'none';
       orbWrap.style.display = 'flex';
       iconMic.style.display = 'none';
       iconCam.style.display = 'block';
       estado.innerText = "Listo para hablar";
+      clearTimeout(videoTimeout);
     }
   };
   
@@ -1495,6 +1507,10 @@ body.rainy-abierta .wsp-bubble{display:none!important}
       };
 
       ws.onmessage = function(e){
+          clearTimeout(audioTimeout);
+          audioTimeout = setTimeout(function(){
+            if(window.activo) { window.vozDetener(); alert("Llamada terminada: Sin respuesta de la IA durante 20 segundos."); }
+          }, 20000);
         try {
           var msg = JSON.parse(e.data);
           if(msg.tipo === 'audio' && msg.data) encolarPCM(msg.data, msg.sampleRate || 24000);
