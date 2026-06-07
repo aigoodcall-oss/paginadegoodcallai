@@ -170,10 +170,16 @@ window.addEventListener('scroll', () => {
   const toggle = document.getElementById('themeToggle');
   if(!toggle) return;
   
-  // Check saved preference or system preference
-  const saved = localStorage.getItem('gc-theme');
+  // Resetear el localStorage si se habia quedado pegado en oscuro de versiones anteriores
+  let saved = localStorage.getItem('gc-theme');
+  if (!localStorage.getItem('migrated-to-light-v2')) {
+      saved = 'light';
+      localStorage.setItem('migrated-to-light-v2', 'true');
+  }
+  
   const theme = saved || 'light'; // default light
   document.documentElement.setAttribute('data-theme', theme);
+  localStorage.setItem('gc-theme', theme);
   
   toggle.addEventListener('click', ()=>{
     const current = document.documentElement.getAttribute('data-theme') || 'light';
