@@ -1076,8 +1076,65 @@ function trimChat(container, maxVisible){
     const arrow1 = document.getElementById('flowArrow1');
     if(arrow1) arrow1.style.opacity = '1';
 
-    // Pre-existing old emails (dimmed)
-    const oldEmails = `
+    // New email slides in on top after a beat
+    setTimeout(()=>{
+      const newRow = document.createElement('div');
+      newRow.className = 'fe-row unread highlight new-email-anim';
+      newRow.innerHTML = `
+        <div class="fe-row-check"></div>
+        <div class="fe-row-star active"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></div>
+        <div class="fe-row-content">
+          <div class="fe-row-top">
+            <div class="fe-row-from" style="color:var(--accent)">Good Call AI</div>
+            <div class="fe-row-subject" style="color:var(--ink);font-weight:700">Nueva cita agendada — Ana Martínez</div>
+            <div class="fe-row-badge">Nuevo</div>
+          </div>
+          <div class="fe-row-preview" style="color:var(--ink-2)">Paciente: Ana Martínez · Tel: 987654321 · Limpieza dental · Jue 13/03 3:00PM · Dra. García</div>
+        </div>
+        <div class="fe-row-time" style="color:var(--accent);font-weight:700">Ahora</div>
+      `;
+      flowEmail.insertBefore(newRow, flowEmail.firstChild);
+      requestAnimationFrame(()=> newRow.classList.add('show'));
+
+      setTimeout(showCRM, 1200);
+    }, 600);
+  }
+
+  function showCRM(){
+    const arrow2 = document.getElementById('flowArrow2');
+    if(arrow2) arrow2.style.opacity = '1';
+
+    setTimeout(()=>{
+      const newRow = document.createElement('div');
+      newRow.className = 'fc-row show new new-crm-anim';
+      newRow.innerHTML = `
+        <div class="fc-cell name" style="color:var(--accent)">Ana Martínez</div>
+        <div class="fc-cell">Limpieza</div>
+        <div class="fc-cell">13/03</div>
+        <div class="fc-cell"><span class="fc-status new-lead">Nuevo</span></div>
+      `;
+      flowCRM.appendChild(newRow);
+
+      // Restart after viewing
+      setTimeout(()=>{
+        flowChat.innerHTML = '';
+        const emailAnim = flowEmail.querySelector('.new-email-anim');
+        if(emailAnim) emailAnim.remove();
+        const crmAnim = flowCRM.querySelector('.new-crm-anim');
+        if(crmAnim) crmAnim.remove();
+
+        const a1 = document.getElementById('flowArrow1');
+        const a2 = document.getElementById('flowArrow2');
+        if(a1) a1.style.opacity = '.3';
+        if(a2) a2.style.opacity = '.3';
+        chatIdx = 0;
+        addChatMsg();
+      }, 5000);
+    }, 600);
+  }
+
+  function initFlowState(){
+    flowEmail.innerHTML = `
       <div class="fe-row show" style="opacity:.4">
         <div class="fe-row-check"></div>
         <div class="fe-row-star"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></div>
@@ -1097,78 +1154,29 @@ function trimChat(container, maxVisible){
         <div class="fe-row-time">Ayer</div>
       </div>
     `;
-    flowEmail.innerHTML = oldEmails;
-
-    // New email slides in on top after a beat
-    setTimeout(()=>{
-      const newRow = document.createElement('div');
-      newRow.className = 'fe-row unread highlight';
-      newRow.innerHTML = `
-        <div class="fe-row-check"></div>
-        <div class="fe-row-star active"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></div>
-        <div class="fe-row-content">
-          <div class="fe-row-top">
-            <div class="fe-row-from" style="color:var(--accent)">Good Call AI</div>
-            <div class="fe-row-subject" style="color:#fff">Nueva cita agendada — Ana Martínez</div>
-            <div class="fe-row-badge">Nuevo</div>
-          </div>
-          <div class="fe-row-preview" style="color:var(--ink-2)">Paciente: Ana Martínez · Tel: 987654321 · Limpieza dental · Jue 13/03 3:00PM · Dra. García</div>
-        </div>
-        <div class="fe-row-time" style="color:var(--accent);font-weight:700">Ahora</div>
-      `;
-      flowEmail.insertBefore(newRow, flowEmail.firstChild);
-      // Trigger animation
-      requestAnimationFrame(()=> newRow.classList.add('show'));
-
-      setTimeout(showCRM, 1200);
-    }, 600);
+    flowCRM.innerHTML = `
+      <div class="fc-table-header">
+        <div class="fc-th">Nombre</div>
+        <div class="fc-th">Servicio</div>
+        <div class="fc-th">Fecha</div>
+        <div class="fc-th">Estado</div>
+      </div>
+      <div class="fc-row show" style="opacity:.45">
+        <div class="fc-cell name">Carlos Ruiz</div>
+        <div class="fc-cell">Ortodoncia</div>
+        <div class="fc-cell">11/03</div>
+        <div class="fc-cell"><span class="fc-status closed">Cerrado</span></div>
+      </div>
+      <div class="fc-row show" style="opacity:.45">
+        <div class="fc-cell name">Laura Vega</div>
+        <div class="fc-cell">Blanqueam.</div>
+        <div class="fc-cell">12/03</div>
+        <div class="fc-cell"><span class="fc-status contacted">Contactado</span></div>
+      </div>
+    `;
   }
-
-  function showCRM(){
-    const arrow2 = document.getElementById('flowArrow2');
-    if(arrow2) arrow2.style.opacity = '1';
-
-    setTimeout(()=>{
-      flowCRM.innerHTML = `
-        <div class="fc-table-header">
-          <div class="fc-th">Nombre</div>
-          <div class="fc-th">Servicio</div>
-          <div class="fc-th">Fecha</div>
-          <div class="fc-th">Estado</div>
-        </div>
-        <div class="fc-row show" style="transition-delay:.05s;opacity:.45">
-          <div class="fc-cell name">Carlos Ruiz</div>
-          <div class="fc-cell">Ortodoncia</div>
-          <div class="fc-cell">11/03</div>
-          <div class="fc-cell"><span class="fc-status closed">Cerrado</span></div>
-        </div>
-        <div class="fc-row show" style="transition-delay:.15s;opacity:.45">
-          <div class="fc-cell name">Laura Vega</div>
-          <div class="fc-cell">Blanqueam.</div>
-          <div class="fc-cell">12/03</div>
-          <div class="fc-cell"><span class="fc-status contacted">Contactado</span></div>
-        </div>
-        <div class="fc-row show new" style="transition-delay:.3s">
-          <div class="fc-cell name" style="color:var(--accent)">Ana Martínez</div>
-          <div class="fc-cell">Limpieza</div>
-          <div class="fc-cell">13/03</div>
-          <div class="fc-cell"><span class="fc-status new-lead">Nuevo</span></div>
-        </div>
-      `;
-      // Restart after viewing
-      setTimeout(()=>{
-        flowChat.innerHTML = '';
-        flowEmail.innerHTML = '';
-        flowCRM.innerHTML = '';
-        const a1 = document.getElementById('flowArrow1');
-        const a2 = document.getElementById('flowArrow2');
-        if(a1) a1.style.opacity = '.3';
-        if(a2) a2.style.opacity = '.3';
-        chatIdx = 0;
-        addChatMsg();
-      }, 6000);
-    }, 600);
-  }
+  
+  initFlowState();
 
   // Start on scroll into view
   const flowObs = new IntersectionObserver((entries)=>{
