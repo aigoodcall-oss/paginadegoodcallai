@@ -32,18 +32,23 @@
 [data-theme="light"] .hero-bg{opacity:.3}
 [data-theme="light"] .logo-dark{display:none}/* === LIGHT MODE BLUE GRADIENT ACCENTS === */
 [data-theme="light"] .features-section,
-[data-theme="light"] #flujo-vivo {
+[data-theme="light"] #flujo-vivo,
+[data-theme="light"] .testi-section {
   background: linear-gradient(135deg, #38bdf8 0%, #0284c7 100%) !important;
   position: relative;
 }
 [data-theme="light"] .features-section .sec-h2,
-[data-theme="light"] #flujo-vivo .sec-h2 { color: #ffffff; }
+[data-theme="light"] #flujo-vivo .sec-h2,
+[data-theme="light"] .testi-section .sec-h2 { color: #ffffff; }
 [data-theme="light"] .features-section .sec-p,
-[data-theme="light"] #flujo-vivo .sec-p { color: rgba(255, 255, 255, 0.85); }
+[data-theme="light"] #flujo-vivo .sec-p,
+[data-theme="light"] .testi-section .sec-p { color: rgba(255, 255, 255, 0.85); }
 [data-theme="light"] .features-section .eyebrow,
-[data-theme="light"] #flujo-vivo .eyebrow { color: #bae6fd !important; }
+[data-theme="light"] #flujo-vivo .eyebrow,
+[data-theme="light"] .testi-section .eyebrow { color: #bae6fd !important; }
 [data-theme="light"] .features-section em,
-[data-theme="light"] #flujo-vivo em {
+[data-theme="light"] #flujo-vivo em,
+[data-theme="light"] .testi-section em {
   background: linear-gradient(90deg, #7dd3fc, #e0f2fe);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
