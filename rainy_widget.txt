@@ -1,0 +1,456 @@
+<!-- VOZ PREVIEW — Rainy, asistente de voz IA -->
+<style>
+#voz-fab{position:fixed;bottom:104px;right:28px;z-index:99999;display:none;flex-direction:column;align-items:flex-end;gap:10px}
+#voz-fab.visible{display:flex}
+/* Mientras la burbuja de WhatsApp esta abierta, tapa el icono de Rainy (y viceversa) */
+body.wsp-abierto #voz-fab{display:none!important}
+#voz-btn{width:60px;height:60px;border-radius:50%;background:linear-gradient(135deg,#06b6d4,#6366f1);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 20px rgba(99,102,241,.5);transition:transform .2s;padding:0;overflow:hidden}
+#voz-btn:hover{transform:scale(1.08)}
+#voz-btn img{width:100%;height:100%;object-fit:cover;display:block}
+#voz-btn.escuchando{animation:vozPulse 1s ease-in-out infinite}
+@keyframes vozPulse{0%,100%{box-shadow:0 4px 20px rgba(99,102,241,.5)}50%{box-shadow:0 4px 38px rgba(99,102,241,.95)}}
+
+#voz-panel{width:340px;height:420px;background:rgba(6,10,20,.97);border:1px solid rgba(99,102,241,.4);border-radius:16px;display:none;flex-direction:column;overflow:hidden}
+/* Mientras Rainy esta abierta, la burbuja de WhatsApp no debe aparecer encima */
+body.rainy-abierta .wsp-bubble{display:none!important}
+#voz-panel.open{display:flex}
+
+#voz-hdr{display:flex;align-items:center;gap:10px;padding:13px 14px;border-bottom:1px solid rgba(255,255,255,.07);flex-shrink:0}
+#voz-hdr-logo{width:32px;height:32px;border-radius:50%;object-fit:cover;flex-shrink:0;box-shadow:0 0 0 2px rgba(99,102,241,.35)}
+#voz-hdr-info{flex:1;min-width:0}
+#voz-hdr-nombre{font-size:14px;font-weight:700;color:#fff;line-height:1.2}
+#voz-hdr-sub{font-size:10.5px;color:#94a3b8;line-height:1.2;margin-top:2px}
+#voz-cerrar{background:none;border:none;color:#64748b;font-size:18px;line-height:1;cursor:pointer;padding:2px 4px}
+#voz-cerrar:hover{color:#cbd5e1}
+
+/* ── Vista chat de texto (por defecto) ── */
+#voz-vista-chat{display:flex;flex-direction:column;flex:1;min-height:0}
+#voz-chat-msgs{flex:1;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:8px}
+.voz-msg{font-size:12.5px;line-height:1.5;padding:8px 12px;border-radius:13px;max-width:85%;word-wrap:break-word}
+.voz-msg.bot{align-self:flex-start;background:rgba(255,255,255,.06);color:#e2e8f0;border-bottom-left-radius:4px}
+.voz-msg.user{align-self:flex-end;background:linear-gradient(135deg,#06b6d4,#6366f1);color:#fff;border-bottom-right-radius:4px}
+.voz-msg.cargando{display:flex;gap:4px;align-items:center;padding:11px 14px}
+.voz-msg.cargando span{width:6px;height:6px;border-radius:50%;background:#94a3b8;animation:vozDot 1.2s infinite ease-in-out}
+.voz-msg.cargando span:nth-child(2){animation-delay:.15s}
+.voz-msg.cargando span:nth-child(3){animation-delay:.3s}
+@keyframes vozDot{0%,60%,100%{opacity:.3;transform:translateY(0)}30%{opacity:1;transform:translateY(-3px)}}
+
+#voz-chat-input-wrap{display:flex;align-items:flex-end;gap:6px;padding:10px 14px 13px;border-top:1px solid rgba(255,255,255,.07);flex-shrink:0}
+#voz-chat-input{flex:1;resize:none;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:13px;color:#fff;font:inherit;font-size:12.5px;padding:10px 12px;line-height:1.4;max-height:84px;box-sizing:border-box}
+#voz-chat-input:focus{outline:none;border-color:rgba(99,102,241,.55)}
+#voz-chat-input::placeholder{color:#5b6678}
+#voz-btn-dictar,#voz-btn-accion{flex-shrink:0;border:none;cursor:pointer;border-radius:50%;display:flex;align-items:center;justify-content:center;width:30px;height:30px;margin-bottom:1px;transition:background .15s,color .15s}
+#voz-btn-dictar svg,#voz-btn-accion svg{width:14px;height:14px;fill:currentColor}
+#voz-btn-dictar{background:rgba(255,255,255,.07);color:#94a3b8}
+#voz-btn-dictar:hover{background:rgba(99,102,241,.3);color:#fff}
+#voz-btn-dictar.activo{background:rgba(239,68,68,.22);color:#f87171}
+#voz-btn-accion{background:linear-gradient(135deg,#06b6d4,#6366f1);color:#fff}
+#voz-btn-accion:hover{filter:brightness(1.12)}
+#voz-icon-enviar{display:none}
+#voz-chat-input-wrap.tiene-texto #voz-icon-ondas{display:none}
+#voz-chat-input-wrap.tiene-texto #voz-icon-enviar{display:block}
+
+/* ── Vista voz (orbe) ── */
+#voz-vista-voz{display:none;flex-direction:column;padding:8px 16px 20px;flex:1}
+#voz-vista-voz.activa{display:flex}
+#voz-vista-chat.oculta{display:none}
+#voz-volver{align-self:flex-start;background:none;border:none;color:#64748b;font-size:11px;cursor:pointer;padding:6px 2px;display:flex;align-items:center;gap:4px}
+#voz-volver:hover{color:#cbd5e1}
+#voz-volver svg{width:12px;height:12px;fill:currentColor}
+#voz-estado{font-size:12px;color:#94a3b8;text-align:center;min-height:16px;transition:opacity .4s ease}
+#voz-orb-wrap{position:relative;display:flex;align-items:center;justify-content:center;height:150px;margin:38px 0 4px}
+#voz-orb-glow{position:absolute;width:128px;height:128px;border-radius:50%;background:radial-gradient(circle,rgba(99,102,241,.55),rgba(6,182,212,.28) 55%,transparent 75%);filter:blur(7px);animation:vozGlow 2.6s ease-in-out infinite}
+#voz-orb-wrap.hablando #voz-orb-glow{animation:vozGlow 1s ease-in-out infinite}
+#voz-orb-wrap.cargando #voz-orb-glow{animation:vozGlow 1.6s ease-in-out infinite;background:radial-gradient(circle,rgba(6,182,212,.6),rgba(99,102,241,.28) 55%,transparent 75%)}
+#voz-orb{position:relative;width:88px;height:88px;border-radius:50%;object-fit:cover;display:block;animation:vozFloat 3.2s ease-in-out infinite;box-shadow:0 10px 32px rgba(99,102,241,.5)}
+#voz-orb.hablando{animation:vozFloat 3.2s ease-in-out infinite,vozHabla .5s ease-in-out infinite}
+@keyframes vozFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
+@keyframes vozGlow{0%,100%{transform:scale(1);opacity:.5}50%{transform:scale(1.2);opacity:.9}}
+@keyframes vozHabla{0%,100%{transform:scale(1)}50%{transform:scale(1.06)}}
+</style>
+
+<div id="voz-fab">
+  <div id="voz-panel">
+    <div id="voz-hdr">
+      <img id="voz-hdr-logo" src="logos/rainy-icon.png" alt="">
+      <div id="voz-hdr-info">
+        <div id="voz-hdr-nombre">Rainy</div>
+        <div id="voz-hdr-sub">Asistente IA · Good Call AI</div>
+      </div>
+      <button id="voz-cerrar" onclick="vozCerrarPanel()" aria-label="Cerrar">✕</button>
+    </div>
+
+    <!-- Vista chat de texto (por defecto) -->
+    <div id="voz-vista-chat">
+      <div id="voz-chat-msgs"><div class="voz-msg bot">¡Hola! Soy Rainy 👋 ¿En qué puedo ayudarte hoy?</div></div>
+      <div id="voz-chat-input-wrap">
+        <textarea id="voz-chat-input" rows="1" placeholder="Escríbele a Rainy..."></textarea>
+        <button id="voz-btn-dictar" title="Dictar por voz" onclick="vozToggleDictado()" aria-label="Dictar por voz">
+          <svg viewBox="0 0 24 24"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3zm-1 3a1 1 0 0 1 2 0v8a1 1 0 0 1-2 0V4zm-4 8a5 5 0 0 0 10 0h2a7 7 0 0 1-6 6.93V21h2v2H9v-2h2v-2.07A7 7 0 0 1 5 12H7z"/></svg>
+        </button>
+        <button id="voz-btn-accion" title="Hablar con Rainy / Enviar" onclick="vozAccionPrincipal()" aria-label="Hablar o enviar mensaje">
+          <svg id="voz-icon-ondas" viewBox="0 0 24 24"><path d="M4 10v4H2v-4h2zm4-3v10H6V7h2zm4-4v18h-2V3h2zm4 4v10h-2V7h2zm4 3v4h-2v-4h2z"/></svg>
+          <svg id="voz-icon-enviar" viewBox="0 0 24 24"><path d="m22 2-11 20-3-9-9-3z"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Vista voz (orbe) -->
+    <div id="voz-vista-voz">
+      <button id="voz-volver" onclick="vozVolverChat()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+        chat de texto
+      </button>
+      <div id="voz-orb-wrap">
+        <div id="voz-orb-glow"></div>
+        <img id="voz-orb" src="logos/voz-orb.png" alt="">
+      </div>
+      <div id="voz-estado">Listo para hablar</div>
+    </div>
+  </div>
+  <button id="voz-btn" title="Habla o escríbele a Rainy" onclick="vozToggle()">
+    <img src="logos/rainy-icon.png" alt="Rainy">
+  </button>
+</div>
+
+<script>
+(function(){
+  document.getElementById('voz-fab').classList.add('visible');
+
+  var ws = null;
+  var micCtx = null;   // AudioContext para captura (16kHz)
+  var playCtx = null;  // AudioContext para reproducción (24kHz)
+  var processor = null;
+  var source = null;
+  var stream = null;
+  var activo = false;
+  var nextPlayAt = 0;  // scheduling secuencial — igual que jitter buffer del .52
+  var activeSources = [];  // buffers sonando/programados — para poder cortarlos en una interrupcion
+  var PARTIDA_ID = 16;
+  var WS_URL = 'wss://crm.goodcallai.net/ws/voz-live?partidaId=' + PARTIDA_ID;
+  var CHAT_URL = 'https://crm.goodcallai.net/api/rainy/chat-web';
+  var vozHistorial = [
+    { role: 'assistant', content: '¡Hola! Soy Rainy 👋 ¿En qué puedo ayudarte hoy?' }
+  ];
+  var vozEnviandoTexto = false;
+  var estadoTimer = null;
+  var vozSonidos = {};
+  function vozReproducirSonido(nombre){
+    try {
+      var snd = vozSonidos[nombre];
+      if(!snd){ snd = new Audio('sounds/rainy-' + nombre + '.wav'); snd.volume = 0.45; vozSonidos[nombre] = snd; }
+      snd.currentTime = 0;
+      snd.play().catch(function(){});
+    } catch(ex){}
+  }
+
+  // Estado normal (persiste hasta el proximo setEstado)
+  function setEstado(txt){
+    if(estadoTimer){ clearTimeout(estadoTimer); estadoTimer = null; }
+    var el = document.getElementById('voz-estado');
+    el.style.opacity = '1';
+    el.textContent = txt;
+  }
+  // Estado de transicion: aparece, y luego de "ms" se desvanece y se vacia ("se quita")
+  function setEstadoTemporal(txt, ms){
+    setEstado(txt);
+    estadoTimer = setTimeout(function(){
+      var el = document.getElementById('voz-estado');
+      el.style.opacity = '0';
+      estadoTimer = setTimeout(function(){ el.textContent = ''; }, 400);
+    }, ms);
+  }
+
+  // Orbe flotante: se activa la animacion "hablando" mientras haya audio de la IA sonando
+  function vozOrbHablando(on){
+    var wrap = document.getElementById('voz-orb-wrap');
+    var orb = document.getElementById('voz-orb');
+    if(!wrap || !orb) return;
+    wrap.classList.toggle('hablando', !!on);
+    orb.classList.toggle('hablando', !!on);
+  }
+
+  // Corta de inmediato todo lo que suena o esta programado (igual que _fadeOutAndStop del .52)
+  function detenerReproduccionActual(){
+    activeSources.forEach(function(s){ try { s.stop(); s.disconnect(); } catch(ex){} });
+    activeSources = [];
+    nextPlayAt = 0;
+    vozOrbHablando(false);
+  }
+
+  function resetPlayQueue(){ detenerReproduccionActual(); }
+
+  // Reproduce PCM 16-bit encadenando chunks sin gaps ni explosiones
+  function encolarPCM(b64, sampleRate){
+    try {
+      if(!playCtx) return;
+      var sr = sampleRate || 24000;
+      var bin = atob(b64);
+      var bytes = new Uint8Array(bin.length);
+      for(var i=0;i<bin.length;i++) bytes[i]=bin.charCodeAt(i);
+      var int16 = new Int16Array(bytes.buffer);
+      var float32 = new Float32Array(int16.length);
+      for(var j=0;j<int16.length;j++) float32[j] = int16[j] / 32768.0;
+      var buf = playCtx.createBuffer(1, float32.length, sr);
+      buf.getChannelData(0).set(float32);
+      var src = playCtx.createBufferSource();
+      src.buffer = buf;
+      src.connect(playCtx.destination);
+      // Encadenar secuencialmente, sin recortes: igual que el jitter buffer del .52, dejamos que la
+      // cola crezca y se reproduzca a ritmo real — cortar a mitad de un buffer suena entrecortado y
+      // se come palabras. Lo unico que debe vaciar la cola es una interrupcion real (interrumpido).
+      var now = playCtx.currentTime;
+      var startAt = Math.max(now + 0.05, nextPlayAt);
+      src.start(startAt);
+      activeSources.push(src);
+      vozOrbHablando(true);
+      src.onended = function(){
+        var i = activeSources.indexOf(src);
+        if(i >= 0) activeSources.splice(i, 1);
+        if(activeSources.length === 0) vozOrbHablando(false);
+      };
+      nextPlayAt = startAt + buf.duration;
+    } catch(ex){ console.warn('PCM error', ex); }
+  }
+
+  // ── Chat de texto con Rainy ──
+  function vozAgregarMensaje(rol, texto){
+    var cont = document.getElementById('voz-chat-msgs');
+    var div = document.createElement('div');
+    div.className = 'voz-msg ' + (rol === 'user' ? 'user' : 'bot');
+    div.textContent = texto;
+    cont.appendChild(div);
+    cont.scrollTop = cont.scrollHeight;
+  }
+
+  function vozMostrarEscribiendo(){
+    var cont = document.getElementById('voz-chat-msgs');
+    var div = document.createElement('div');
+    div.className = 'voz-msg bot cargando';
+    div.id = 'voz-escribiendo';
+    div.innerHTML = '<span></span><span></span><span></span>';
+    cont.appendChild(div);
+    cont.scrollTop = cont.scrollHeight;
+  }
+  function vozQuitarEscribiendo(){
+    var el = document.getElementById('voz-escribiendo');
+    if(el) el.remove();
+  }
+
+  window.vozEnviarTexto = function(){
+    if(vozEnviandoTexto) return;
+    var input = document.getElementById('voz-chat-input');
+    var texto = (input.value || '').trim();
+    if(!texto) return;
+
+    vozAgregarMensaje('user', texto);
+    vozHistorial.push({ role: 'user', content: texto });
+    input.value = '';
+    input.style.height = 'auto';
+    document.getElementById('voz-chat-input-wrap').classList.remove('tiene-texto');
+    vozEnviandoTexto = true;
+    vozMostrarEscribiendo();
+
+    fetch(CHAT_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ partidaId: PARTIDA_ID, messages: vozHistorial })
+    }).then(function(r){ return r.json(); }).then(function(data){
+      vozQuitarEscribiendo();
+      vozEnviandoTexto = false;
+      var reply = (data && data.reply) ? data.reply : 'Disculpa, no pude responder justo ahora. ¿Puedes intentar de nuevo en un momento?';
+      vozAgregarMensaje('bot', reply);
+      vozHistorial.push({ role: 'assistant', content: reply });
+    }).catch(function(){
+      vozQuitarEscribiendo();
+      vozEnviandoTexto = false;
+      vozAgregarMensaje('bot', 'Hubo un problema de conexión. Intenta de nuevo en un momento 🙏');
+    });
+  };
+
+  // Boton derecho del chat: si hay texto escrito, envia; si esta vacio, abre el modo de voz (como GPT)
+  window.vozAccionPrincipal = function(){
+    var ta = document.getElementById('voz-chat-input');
+    if(ta && ta.value.trim()) window.vozEnviarTexto();
+    else window.vozAbrirVoz();
+  };
+
+  // Boton de dictado: convierte lo que dices en texto dentro del chat (no abre el modo de voz)
+  var vozReco = null;
+  var vozDictando = false;
+  window.vozToggleDictado = function(){
+    var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+    var btn = document.getElementById('voz-btn-dictar');
+    if(!SR){ alert('Tu navegador no soporta el dictado por voz.'); return; }
+    if(vozDictando){ if(vozReco) vozReco.stop(); return; }
+
+    var ta = document.getElementById('voz-chat-input');
+    var base = (ta.value || '').trim();
+    vozReco = new SR();
+    vozReco.lang = 'es-ES';
+    vozReco.continuous = true;
+    vozReco.interimResults = true;
+
+    vozReco.onresult = function(e){
+      var texto = '';
+      for(var i = 0; i < e.results.length; i++) texto += e.results[i][0].transcript;
+      ta.value = (base ? base + ' ' : '') + texto;
+      ta.dispatchEvent(new Event('input'));
+    };
+    vozReco.onend = function(){
+      vozDictando = false;
+      if(btn) btn.classList.remove('activo');
+    };
+    vozReco.onerror = function(){
+      vozDictando = false;
+      if(btn) btn.classList.remove('activo');
+    };
+
+    try {
+      vozReco.start();
+      vozDictando = true;
+      if(btn) btn.classList.add('activo');
+    } catch(ex){}
+  };
+
+  // Enter envia, Shift+Enter hace salto de linea; el textarea crece con el contenido
+  (function(){
+    var ta = document.getElementById('voz-chat-input');
+    if(!ta) return;
+    ta.addEventListener('input', function(){
+      ta.style.height = 'auto';
+      ta.style.height = Math.min(ta.scrollHeight, 84) + 'px';
+      var wrap = document.getElementById('voz-chat-input-wrap');
+      if(ta.value.trim()) wrap.classList.add('tiene-texto');
+      else wrap.classList.remove('tiene-texto');
+    });
+    ta.addEventListener('keydown', function(e){
+      if(e.key === 'Enter' && !e.shiftKey){
+        e.preventDefault();
+        window.vozEnviarTexto();
+      }
+    });
+  })();
+
+  // ── Apertura del panel: por defecto siempre cae en el chat de texto ──
+  function vozMostrarVistaChat(){
+    document.getElementById('voz-vista-voz').classList.remove('activa');
+    document.getElementById('voz-vista-chat').classList.remove('oculta');
+  }
+  function vozMostrarVistaVoz(){
+    document.getElementById('voz-vista-chat').classList.add('oculta');
+    document.getElementById('voz-vista-voz').classList.add('activa');
+  }
+
+  window.vozCerrarPanel = function(){
+    document.getElementById('voz-panel').classList.remove('open');
+    document.body.classList.remove('rainy-abierta');
+    if(activo) vozDetener();
+    vozMostrarVistaChat();
+  };
+
+  window.vozToggle = function(){
+    var panel = document.getElementById('voz-panel');
+    if(!panel.classList.contains('open')){
+      panel.classList.add('open');
+      document.body.classList.add('rainy-abierta');
+      if(typeof window.closeBubble === 'function') window.closeBubble();
+    } else {
+      if(activo) vozDetener();
+      panel.classList.remove('open');
+      document.body.classList.remove('rainy-abierta');
+      vozMostrarVistaChat();
+    }
+  };
+
+  // El icono de microfono (arriba-derecha del textarea) es la unica puerta a la voz
+  window.vozAbrirVoz = function(){
+    vozMostrarVistaVoz();
+    vozIniciar();
+  };
+
+  window.vozVolverChat = function(){
+    if(activo) vozDetener();
+    vozMostrarVistaChat();
+  };
+
+  function vozIniciar(){
+    if(activo) return;
+    activo = true;
+    setEstado('Cargando Rainy...');
+    document.getElementById('voz-orb-wrap').classList.add('cargando');
+    vozReproducirSonido('conectando');
+    document.getElementById('voz-btn').classList.add('escuchando');
+
+    navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true } }).then(function(s){
+      stream = s;
+      ws = new WebSocket(WS_URL);
+      ws.binaryType = 'arraybuffer';
+
+      ws.onopen = function(){
+        // Contexto de reproduccion a 24kHz (frecuencia nativa de Gemini Live)
+        playCtx = new (window.AudioContext || window.webkitAudioContext)({ sampleRate: 24000 });
+        resetPlayQueue();
+        // Captura PCM a 16kHz
+        micCtx = new (window.AudioContext || window.webkitAudioContext)({ sampleRate: 16000 });
+        source = micCtx.createMediaStreamSource(stream);
+        processor = micCtx.createScriptProcessor(4096, 1, 1);
+        processor.onaudioprocess = function(e){
+          if(!ws || ws.readyState !== 1) return;
+          var float32 = e.inputBuffer.getChannelData(0);
+          // Float32 -> Int16
+          var int16 = new Int16Array(float32.length);
+          for(var i=0;i<float32.length;i++){
+            var s = Math.max(-1, Math.min(1, float32[i]));
+            int16[i] = s < 0 ? s * 32768 : s * 32767;
+          }
+          // Int16 -> base64
+          var bytes = new Uint8Array(int16.buffer);
+          var bin = '';
+          for(var j=0;j<bytes.length;j++) bin += String.fromCharCode(bytes[j]);
+          ws.send(JSON.stringify({ tipo: 'audio', data: btoa(bin) }));
+        };
+        source.connect(processor);
+        processor.connect(micCtx.destination);
+      };
+
+      ws.onmessage = function(e){
+        try {
+          var msg = JSON.parse(e.data);
+          if(msg.tipo === 'audio' && msg.data) encolarPCM(msg.data, msg.sampleRate || 24000);
+          if(msg.tipo === 'interrumpido') detenerReproduccionActual();
+          if(msg.tipo === 'estado' && msg.texto) setEstado(msg.texto);
+          if(msg.tipo === 'sesion_iniciada'){
+            document.getElementById('voz-orb-wrap').classList.remove('cargando');
+            setEstadoTemporal('¡Lista! Habla', 1400);
+            vozReproducirSonido('listo');
+          }
+        } catch(ex){}
+      };
+
+      ws.onclose = function(){ setEstado('Desconectado'); vozDetener(); };
+      ws.onerror = function(){ setEstado('Error de conexion'); vozDetener(); };
+
+    }).catch(function(){
+      setEstado('Sin acceso al microfono');
+      activo = false;
+      document.getElementById('voz-btn').classList.remove('escuchando');
+    });
+  }
+
+  function vozDetener(){
+    activo = false;
+    document.getElementById('voz-orb-wrap').classList.remove('cargando');
+    document.getElementById('voz-btn').classList.remove('escuchando');
+    setEstado('Listo para hablar');
+    resetPlayQueue();
+    if(processor) { try { processor.disconnect(); } catch(ex){} processor = null; }
+    if(source) { try { source.disconnect(); } catch(ex){} source = null; }
+    if(micCtx) { try { micCtx.close(); } catch(ex){} micCtx = null; }
+    if(playCtx) { try { playCtx.close(); } catch(ex){} playCtx = null; }
+    if(stream) stream.getTracks().forEach(function(t){ t.stop(); }); stream = null;
+    if(ws) { try { ws.close(); } catch(ex){} } ws = null;
+  }
+})();
+</script>
+  <script src="js/main.js"></script>
