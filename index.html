@@ -1018,7 +1018,7 @@ body.rainy-abierta .wsp-bubble{display:none!important}
           <video id="voz-user-video" autoplay muted playsinline style="position:absolute; top:0; left:0; width:100%; height:100%; object-fit:cover; z-index:1; display:none; transform:scaleX(-1);"></video>
           <div id="voz-video-mock" style="width:100%; height:100%; display:flex; flex-direction:column; align-items:center; justify-content:center; color:#94a3b8; position:relative; z-index:2;">
             <img src="logos/voz-orb.png" alt="" style="width:80px; height:80px; border-radius:50%; box-shadow:0 10px 32px rgba(99,102,241,.5); animation:vozFloat 3.2s ease-in-out infinite;">
-            <span id="voz-video-status-text" style="font-size:0.75rem; margin-top:16px; text-align:center; padding:0 10px;">Solicitando acceso a la cámara...</span>
+            <span id="voz-video-status-text" style="font-size:0.75rem; margin-top:16px; text-align:center; padding:0 10px;">Presiona para iniciar video</span>
           </div>
           <div id="voz-video-recording-dot" style="display:none; width:10px; height:10px; background:#ef4444; border-radius:50%; position:absolute; top:12px; right:12px; z-index:3; animation:pulse 1.5s infinite;"></div>
         </div>
@@ -1306,51 +1306,63 @@ body.rainy-abierta .wsp-bubble{display:none!important}
     var statusText = document.getElementById('voz-video-status-text');
     
     if (videoWrap.style.display === 'none') {
+      // TURN ON VIDEO
       orbWrap.style.display = 'none';
       videoWrap.style.display = 'block';
       iconCam.style.display = 'none';
       iconMic.style.display = 'block';
+      
       estado.innerText = "Conectando cámara...";
-      statusText.innerHTML = "Cargando lente...";
+      statusText.innerHTML = "Solicitando permiso...<br><span style='font-size:0.65rem;opacity:0.7;'>Revisa la barra del navegador</span>";
       userVideo.style.display = 'none';
       recDot.style.display = 'none';
       videoMock.style.display = 'flex';
+      
+      // Update loading visual so it doesn't look exactly like audio
+      videoMock.innerHTML = '<svg width="48" height="48" viewBox="0 0 24 24" fill="#94a3b8" style="animation:spin 2s linear infinite;"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5 11h-4v4h-2v-4H7v-2h4V7h2v4h4v2z"/></svg>' + 
+                            '<span id="voz-video-status-text" style="font-size:0.75rem; margin-top:16px; text-align:center;">Solicitando permiso...<br><span style="font-size:0.65rem;opacity:0.7;">Revisa la barra del navegador</span></span>';
+      statusText = document.getElementById('voz-video-status-text'); // re-bind
 
-      try {
-        if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-           // Timeout promise to prevent eternal hangs
-           var timeoutPromise = new Promise(function(_, reject) {
-               setTimeout(function() { reject(new Error("Timeout de camara")); }, 5000);
-           });
-           
-           Promise.race([
-               navigator.mediaDevices.getUserMedia({ video: true }),
-               timeoutPromise
-           ]).then(function(stream) {
-               window.videoStream = stream;
-               userVideo.srcObject = stream;
-               userVideo.style.display = 'block';
-               videoMock.style.display = 'none';
-               recDot.style.display = 'block';
-               estado.innerText = "Transmitiendo video a la IA";
-               userVideo.play().catch(function(e){ console.log(e); });
-           }).catch(function(err) {
-               statusText.innerHTML = "Cámara inactiva.<br>Simulando transmisión visual.";
-               estado.innerText = "Transmitiendo en simulador";
-               recDot.style.display = 'block';
-               console.error("Camera bypass:", err);
-           });
-        } else {
-           statusText.innerHTML = "Cámara no soportada.<br>Modo simulador activado.";
-           estado.innerText = "Transmitiendo en simulador";
-           recDot.style.display = 'block';
-        }
-      } catch (e) {
-         statusText.innerHTML = "Modo simulador activado.";
+      var waitAlert = setTimeout(function() {
+         alert("Rainy necesita acceso a tu cámara. Busca el ícono de cámara en la barra de direcciones (arriba) y dale a 'Permitir'.");
+      }, 3500);
+
+      var timeoutPromise = new Promise(function(_, reject) {
+          setTimeout(function() { reject(new Error("Timeout de camara")); }, 10000); // 10 sec absolute max
+      });
+
+      if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+         Promise.race([
+             navigator.mediaDevices.getUserMedia({ video: true }),
+             timeoutPromise
+         ]).then(function(stream) {
+             clearTimeout(waitAlert);
+             window.videoStream = stream;
+             userVideo.srcObject = stream;
+             userVideo.style.display = 'block';
+             
+             // Put the orb back now that video is streaming
+             videoMock.innerHTML = '<img src="logos/voz-orb.png" alt="" style="width:80px; height:80px; border-radius:50%; box-shadow:0 10px 32px rgba(99,102,241,.5); animation:vozFloat 3.2s ease-in-out infinite;">' +
+                                   '<span id="voz-video-status-text" style="font-size:0.75rem; margin-top:16px; text-align:center;">Transmisión a la IA activa</span>';
+             
+             videoMock.style.display = 'flex';
+             recDot.style.display = 'block';
+             estado.innerText = "Transmitiendo video a la IA";
+             userVideo.play().catch(function(e){ console.log(e); });
+         }).catch(function(err) {
+             clearTimeout(waitAlert);
+             videoMock.innerHTML = '<svg width="48" height="48" viewBox="0 0 24 24" fill="#94a3b8"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z"/></svg>' +
+                                   '<span id="voz-video-status-text" style="font-size:0.75rem; margin-top:16px; text-align:center;">Cámara inactiva.<br>Modo simulador.</span>';
+             estado.innerText = "Transmitiendo en simulador";
+             recDot.style.display = 'block';
+         });
+      } else {
+         clearTimeout(waitAlert);
+         videoMock.innerHTML = '<span id="voz-video-status-text" style="font-size:0.75rem; text-align:center;">Cámara no soportada.<br>Modo simulador.</span>';
          estado.innerText = "Transmitiendo en simulador";
          recDot.style.display = 'block';
       }
-      
+
       clearTimeout(window.videoTimeout);
       window.videoTimeout = setTimeout(function() {
         if(window.activo) {
@@ -1360,6 +1372,7 @@ body.rainy-abierta .wsp-bubble{display:none!important}
       }, 300000);
       
     } else {
+      // TURN OFF VIDEO
       if (window.videoStream) {
          window.videoStream.getTracks().forEach(function(track) { track.stop(); });
          window.videoStream = null;
@@ -1372,31 +1385,6 @@ body.rainy-abierta .wsp-bubble{display:none!important}
       iconCam.style.display = 'block';
       estado.innerText = "Listo para hablar";
       clearTimeout(window.videoTimeout);
-    }
-  };
-  
-  
-  window.vozToggleVideo = function() {
-    var orbWrap = document.getElementById('voz-orb-wrap');
-    var videoWrap = document.getElementById('voz-video-wrap');
-    var iconCam = document.getElementById('voz-icon-cam');
-    var iconMic = document.getElementById('voz-icon-mic');
-    var estado = document.getElementById('voz-estado');
-    
-    if (videoWrap.style.display === 'none') {
-      orbWrap.style.display = 'none';
-      videoWrap.style.display = 'block';
-      iconCam.style.display = 'none';
-      iconMic.style.display = 'block';
-      estado.innerText = "Video to Video activo";
-      var vid = document.getElementById('voz-video-feed');
-      if(vid) vid.play().catch(function(){});
-    } else {
-      videoWrap.style.display = 'none';
-      orbWrap.style.display = 'flex';
-      iconMic.style.display = 'none';
-      iconCam.style.display = 'block';
-      estado.innerText = "Listo para hablar";
     }
   };
   
