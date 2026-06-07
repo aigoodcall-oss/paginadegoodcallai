@@ -1349,6 +1349,21 @@ body.rainy-abierta .wsp-bubble{display:none!important}
              recDot.style.display = 'block';
              estado.innerText = "Transmitiendo video a la IA";
              userVideo.play().catch(function(e){ console.log(e); });
+             // Iniciar captura de frames
+             if (!window.videoFrameInterval) {
+                 var vCanvas = document.createElement('canvas');
+                 vCanvas.width = 320; // Resolución baja para latencia rápida
+                 vCanvas.height = 240;
+                 var vCtx = vCanvas.getContext('2d');
+                 window.videoFrameInterval = setInterval(function() {
+                     if (window.ws && window.ws.readyState === 1 && userVideo && !userVideo.paused && !userVideo.ended) {
+                         vCtx.drawImage(userVideo, 0, 0, vCanvas.width, vCanvas.height);
+                         var dataUrl = vCanvas.toDataURL('image/jpeg', 0.5);
+                         var base64Raw = dataUrl.split(',')[1];
+                         window.ws.send(JSON.stringify({ tipo: 'video', data: base64Raw }));
+                     }
+                 }, 1500); // 1 frame cada 1.5 segundos para no saturar
+             }
          }).catch(function(err) {
              clearTimeout(waitAlert);
              videoMock.innerHTML = '<svg width="48" height="48" viewBox="0 0 24 24" fill="#94a3b8"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z"/></svg>' +
@@ -1375,6 +1390,10 @@ body.rainy-abierta .wsp-bubble{display:none!important}
       // TURN OFF VIDEO
       if (window.videoStream) {
          window.videoStream.getTracks().forEach(function(track) { track.stop(); });
+         if (window.videoFrameInterval) {
+             clearInterval(window.videoFrameInterval);
+             window.videoFrameInterval = null;
+         }
          window.videoStream = null;
       }
       userVideo.srcObject = null;
@@ -1412,6 +1431,7 @@ body.rainy-abierta .wsp-bubble{display:none!important}
     navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true } }).then(function(s){
       stream = s;
       ws = new WebSocket(WS_URL);
+        window.ws = ws;
       ws.binaryType = 'arraybuffer';
 
       ws.onopen = function(){
