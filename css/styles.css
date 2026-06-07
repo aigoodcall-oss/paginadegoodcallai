@@ -804,3 +804,18 @@ footer{padding:4rem 0 2rem;background:var(--bg);border-top:1px solid var(--borde
 [data-theme="dark"] .flow-label { color: #f8fafc !important; }
 .wsp-live-avatar { border: none !important; background: transparent !important; }
 .wsp-live-avatar img { background: transparent !important; object-fit: cover !important; padding: 0 !important; }
+
+
+/* === ENHANCED 3D PRICING CARD (FEATURED) FOR LIGHT MODE === */
+[data-theme="light"] .price-card.featured {
+  background: linear-gradient(180deg, #f0f9ff 0%, #ffffff 100%) !important;
+  border: 2px solid #0ea5e9 !important;
+  box-shadow: 0 30px 60px -12px rgba(14, 165, 233, 0.25), 0 0 20px rgba(14, 165, 233, 0.1) !important;
+  transform: scale(1.06) translateY(-10px) !important;
+  z-index: 2;
+  position: relative;
+}
+[data-theme="light"] .price-card.featured:hover {
+  transform: scale(1.06) translateY(-16px) !important;
+  box-shadow: 0 40px 70px -15px rgba(14, 165, 233, 0.35), 0 0 30px rgba(14, 165, 233, 0.2) !important;
+}
