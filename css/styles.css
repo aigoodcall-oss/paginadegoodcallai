@@ -30,7 +30,40 @@
 [data-theme="light"] .fm-bubble,[data-theme="light"] .wsp-msg-bubble{color:#111!important}
 [data-theme="light"] .fm-time,[data-theme="light"] .wsp-msg-time{color:rgba(0,0,0,.4)!important}
 [data-theme="light"] .hero-bg{opacity:.3}
-[data-theme="light"] .logo-dark{display:none}[data-theme="light"] .logo-light{display:block}
+[data-theme="light"] .logo-dark{display:none}/* === LIGHT MODE BLUE GRADIENT ACCENTS === */
+[data-theme="light"] .cta-banner {
+  background: linear-gradient(135deg, #0ea5e9 0%, #2563eb 100%);
+  border: none;
+  position: relative;
+  overflow: hidden;
+}
+[data-theme="light"] .cta-banner::before {
+  content: ''; position: absolute; inset: 0;
+  background: radial-gradient(circle at 80% 20%, rgba(255,255,255,0.15), transparent 60%), radial-gradient(circle at 10% 90%, rgba(255,255,255,0.1), transparent 40%);
+  pointer-events: none;
+}
+[data-theme="light"] .cta-banner h2 { color: #ffffff; }
+[data-theme="light"] .cta-banner p { color: rgba(255, 255, 255, 0.9); }
+[data-theme="light"] .cta-banner .eyebrow { color: #bae6fd !important; }
+[data-theme="light"] .cta-banner .btn-primary { background: #ffffff; color: #2563eb; box-shadow: 0 8px 24px rgba(0,0,0,0.15); }
+[data-theme="light"] .cta-banner .btn-primary:hover { background: #f8fafc; transform: translateY(-2px); }
+[data-theme="light"] .cta-banner .btn-outline { border-color: rgba(255, 255, 255, 0.3); color: #ffffff; }
+[data-theme="light"] .cta-banner .btn-outline:hover { background: rgba(255, 255, 255, 0.1); }
+
+[data-theme="light"] .price-card.featured {
+  background: linear-gradient(135deg, #0ea5e9 0%, #2563eb 100%);
+  border: none;
+  box-shadow: 0 20px 40px rgba(37,99,235,0.15);
+}
+[data-theme="light"] .price-card.featured h3,
+[data-theme="light"] .price-card.featured .price-amount { color: #ffffff; }
+[data-theme="light"] .price-card.featured .price-period { color: rgba(255,255,255,0.7); }
+[data-theme="light"] .price-card.featured p { color: rgba(255, 255, 255, 0.85); }
+[data-theme="light"] .price-card.featured .pl-item { color: #ffffff; }
+[data-theme="light"] .price-card.featured .pl-item::before { color: #bae6fd; }
+[data-theme="light"] .price-card.featured .btn-primary { background: #ffffff; color: #2563eb; }
+
+/* End of light mode styling */[data-theme="light"] .logo-light{display:block}
 
 html{scroll-behavior:smooth}
 body{font-family:var(--font-body);background:var(--bg);color:var(--ink);overflow-x:hidden;line-height:1.7;-webkit-font-smoothing:antialiased;transition:background .4s,color .4s}
