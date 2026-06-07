@@ -172,12 +172,11 @@ window.addEventListener('scroll', () => {
   
   // Check saved preference or system preference
   const saved = localStorage.getItem('gc-theme');
-  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-  const theme = saved || (prefersDark ? 'dark' : 'dark'); // default dark
+  const theme = saved || 'light'; // default light
   document.documentElement.setAttribute('data-theme', theme);
   
   toggle.addEventListener('click', ()=>{
-    const current = document.documentElement.getAttribute('data-theme') || 'dark';
+    const current = document.documentElement.getAttribute('data-theme') || 'light';
     const next = current === 'dark' ? 'light' : 'dark';
     document.documentElement.setAttribute('data-theme', next);
     localStorage.setItem('gc-theme', next);
