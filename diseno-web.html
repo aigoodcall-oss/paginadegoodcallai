@@ -622,14 +622,23 @@ body.rainy-abierta .wsp-bubble{display:none!important}
 
       // Request actual camera
       if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+        var cameraTimeout = setTimeout(function() {
+          if (statusText.innerText === "Solicitando acceso a la cámara..." || statusText.innerText.includes("Solicitando acceso")) {
+             statusText.innerHTML = "Esperando permiso...<br>Revisa la barra de direcciones.";
+             alert("Rainy necesita acceso a tu cámara. Busca el ícono de cámara en la barra de direcciones de tu navegador y dale a 'Permitir'.");
+          }
+        }, 3000);
         navigator.mediaDevices.getUserMedia({ video: true }).then(function(stream) {
+            clearTimeout(cameraTimeout);
             videoStream = stream;
             userVideo.srcObject = stream;
             userVideo.style.display = 'block';
             videoMock.style.display = 'none';
             recDot.style.display = 'block';
             estado.innerText = "Transmitiendo video a la IA";
+              userVideo.play().catch(function(e){ console.error("Auto-play prevented", e); });
         }).catch(function(err) {
+              clearTimeout(cameraTimeout);
             console.error("Camera error:", err);
             statusText.innerHTML = "Cámara bloqueada.<br>Mostrando imagen de respaldo.";
             estado.innerText = "Video simulado (cámara no disponible)";
