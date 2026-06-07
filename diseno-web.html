@@ -324,7 +324,14 @@ body.rainy-abierta .wsp-bubble{display:none!important}
           </div>
           <div id="voz-video-recording-dot" style="display:none; width:10px; height:10px; background:#ef4444; border-radius:50%; position:absolute; top:12px; right:12px; z-index:3; animation:pulse 1.5s infinite;"></div>
         </div>
-  <button id="voz-btn" title="Habla o escríbele a Rainy" onclick="vozToggle()">
+        <div id="voz-orb-wrap">
+          <div id="voz-orb-glow"></div>
+          <img id="voz-orb" src="logos/voz-orb.png" alt="">
+        </div>
+        <div id="voz-estado">Listo para hablar</div>
+      </div>
+    </div>
+    <button id="voz-btn" title="Habla o escríbele a Rainy" onclick="vozToggle()">
     <img src="logos/rainy-icon.png" alt="Rainy">
   </button>
 </div>
