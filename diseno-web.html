@@ -608,61 +608,63 @@ body.rainy-abierta .wsp-bubble{display:none!important}
     var statusText = document.getElementById('voz-video-status-text');
     
     if (videoWrap.style.display === 'none') {
-      // TURN VIDEO ON
       orbWrap.style.display = 'none';
       videoWrap.style.display = 'block';
       iconCam.style.display = 'none';
       iconMic.style.display = 'block';
       estado.innerText = "Conectando cámara...";
-      
-      statusText.innerText = "Solicitando acceso a la cámara...";
+      statusText.innerHTML = "Cargando lente...";
       userVideo.style.display = 'none';
       recDot.style.display = 'none';
       videoMock.style.display = 'flex';
 
-      // Request actual camera
-      if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-        var cameraTimeout = setTimeout(function() {
-          if (statusText.innerText === "Solicitando acceso a la cámara..." || statusText.innerText.includes("Solicitando acceso")) {
-             statusText.innerHTML = "Esperando permiso...<br>Revisa la barra de direcciones.";
-             alert("Rainy necesita acceso a tu cámara. Busca el ícono de cámara en la barra de direcciones de tu navegador y dale a 'Permitir'.");
-          }
-        }, 3000);
-        navigator.mediaDevices.getUserMedia({ video: true }).then(function(stream) {
-            clearTimeout(cameraTimeout);
-            videoStream = stream;
-            userVideo.srcObject = stream;
-            userVideo.style.display = 'block';
-            videoMock.style.display = 'none';
-            recDot.style.display = 'block';
-            estado.innerText = "Transmitiendo video a la IA";
-              userVideo.play().catch(function(e){ console.error("Auto-play prevented", e); });
-        }).catch(function(err) {
-              clearTimeout(cameraTimeout);
-            console.error("Camera error:", err);
-            statusText.innerHTML = "Cámara bloqueada.<br>Mostrando imagen de respaldo.";
-            estado.innerText = "Video simulado (cámara no disponible)";
-            recDot.style.display = 'block';
-        });
-      } else {
-         statusText.innerHTML = "Tu navegador no soporta cámara aquí.<br>Mostrando imagen de respaldo.";
-         estado.innerText = "Video simulado";
+      try {
+        if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+           // Timeout promise to prevent eternal hangs
+           var timeoutPromise = new Promise(function(_, reject) {
+               setTimeout(function() { reject(new Error("Timeout de camara")); }, 5000);
+           });
+           
+           Promise.race([
+               navigator.mediaDevices.getUserMedia({ video: true }),
+               timeoutPromise
+           ]).then(function(stream) {
+               window.videoStream = stream;
+               userVideo.srcObject = stream;
+               userVideo.style.display = 'block';
+               videoMock.style.display = 'none';
+               recDot.style.display = 'block';
+               estado.innerText = "Transmitiendo video a la IA";
+               userVideo.play().catch(function(e){ console.log(e); });
+           }).catch(function(err) {
+               statusText.innerHTML = "Cámara inactiva.<br>Simulando transmisión visual.";
+               estado.innerText = "Transmitiendo en simulador";
+               recDot.style.display = 'block';
+               console.error("Camera bypass:", err);
+           });
+        } else {
+           statusText.innerHTML = "Cámara no soportada.<br>Modo simulador activado.";
+           estado.innerText = "Transmitiendo en simulador";
+           recDot.style.display = 'block';
+        }
+      } catch (e) {
+         statusText.innerHTML = "Modo simulador activado.";
+         estado.innerText = "Transmitiendo en simulador";
          recDot.style.display = 'block';
       }
       
-      clearTimeout(videoTimeout);
-      videoTimeout = setTimeout(function() {
+      clearTimeout(window.videoTimeout);
+      window.videoTimeout = setTimeout(function() {
         if(window.activo) {
-          window.vozToggleVideo(); // switch back to audio
+          window.vozToggleVideo(); 
           alert("Límite de 5 minutos alcanzado para Video-to-Video.");
         }
       }, 300000);
       
     } else {
-      // TURN VIDEO OFF
-      if (videoStream) {
-         videoStream.getTracks().forEach(track => track.stop());
-         videoStream = null;
+      if (window.videoStream) {
+         window.videoStream.getTracks().forEach(function(track) { track.stop(); });
+         window.videoStream = null;
       }
       userVideo.srcObject = null;
       
@@ -671,7 +673,7 @@ body.rainy-abierta .wsp-bubble{display:none!important}
       iconMic.style.display = 'none';
       iconCam.style.display = 'block';
       estado.innerText = "Listo para hablar";
-      clearTimeout(videoTimeout);
+      clearTimeout(window.videoTimeout);
     }
   };
   
