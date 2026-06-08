@@ -1416,12 +1416,28 @@ body.rainy-abierta .wsp-bubble{display:none!important}
       } else {
           window.vozCamFacingMode = 'user';
       }
+      
       var userVideo = document.getElementById('voz-user-video');
+      
+      // Stop old tracks and clear srcObject to avoid camera freezing on iOS
       if (window.videoStream) {
           window.videoStream.getTracks().forEach(function(track) { track.stop(); });
       }
+      userVideo.srcObject = null;
+      
       if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-         navigator.mediaDevices.getUserMedia({ video: { facingMode: window.vozCamFacingMode } })
+         // Use "exact" for mobile browsers to force the switch
+         var constraints = { video: { facingMode: { exact: window.vozCamFacingMode } } };
+         
+         navigator.mediaDevices.getUserMedia(constraints)
+         .catch(function(err) {
+             // Si falla el exact (ej. en desktop), intentar sin exact
+             return navigator.mediaDevices.getUserMedia({ video: { facingMode: window.vozCamFacingMode } });
+         })
+         .catch(function(err) {
+             // Si sigue fallando, usar default
+             return navigator.mediaDevices.getUserMedia({ video: true });
+         })
          .then(function(stream) {
              window.videoStream = stream;
              userVideo.srcObject = stream;
@@ -1431,13 +1447,9 @@ body.rainy-abierta .wsp-bubble{display:none!important}
                  userVideo.style.transform = 'scaleX(1)';
              }
              userVideo.play().catch(function(e){});
-         }).catch(function(err){
-             navigator.mediaDevices.getUserMedia({ video: true })
-             .then(function(stream) {
-                 window.videoStream = stream;
-                 userVideo.srcObject = stream;
-                 userVideo.play().catch(function(e){});
-             });
+         })
+         .catch(function(err) {
+             console.log("Error final cambiando cámara: " + err.message);
          });
       }
   };
