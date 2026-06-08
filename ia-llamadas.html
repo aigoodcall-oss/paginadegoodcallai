@@ -1460,22 +1460,30 @@ body.rainy-abierta .wsp-bubble{display:none!important}
              recDot.style.display = 'block';
              estado.innerText = "Transmitiendo video a la IA";
              userVideo.play().catch(function(e){ console.log(e); });
-             // Iniciar captura de frames
+             // Iniciar captura de frames v2
              if (!window.videoFrameInterval) {
                  var vCanvas = document.createElement('canvas');
-                 vCanvas.width = 320; // Resolución baja para latencia rápida
+                 vCanvas.width = 320;
                  vCanvas.height = 240;
                  var vCtx = vCanvas.getContext('2d');
                  window.videoFrameInterval = setInterval(function() {
-                     if (window.ws && window.ws.readyState === 1 && userVideo && !userVideo.paused && !userVideo.ended) {
+                     try {
+                         if (!window.ws) { console.log("No ws"); return; }
+                         if (window.ws.readyState !== 1) { console.log("WS not open"); return; }
+                         if (!userVideo || userVideo.paused || userVideo.ended) { console.log("Video not playing"); return; }
+                         
                          vCtx.drawImage(userVideo, 0, 0, vCanvas.width, vCanvas.height);
                          var dataUrl = vCanvas.toDataURL('image/jpeg', 0.5);
+                         if (!dataUrl || dataUrl === 'data:,') return; // Canvas empty
+                         
                          var base64Raw = dataUrl.split(',')[1];
                          window.ws.send(JSON.stringify({ tipo: 'video', data: base64Raw }));
+                     } catch(err) {
+                         console.error("Frame capture error:", err);
                      }
-                 }, 1500); // 1 frame cada 1.5 segundos para no saturar
+                 }, 1500);
              }
-         }).catch(function(err) {
+           }).catch(function(err) {
              clearTimeout(waitAlert);
              videoMock.innerHTML = '<svg width="48" height="48" viewBox="0 0 24 24" fill="#94a3b8"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z"/></svg>' +
                                    '<span id="voz-video-status-text" style="font-size:0.75rem; margin-top:16px; text-align:center;">Cámara inactiva.<br>Modo simulador.</span>';
