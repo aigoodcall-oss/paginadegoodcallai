@@ -1467,21 +1467,29 @@ body.rainy-abierta .wsp-bubble{display:none!important}
                  vCanvas.height = 240;
                  var vCtx = vCanvas.getContext('2d');
                  window.videoFrameInterval = setInterval(function() {
-                     try {
-                         if (!window.ws) { console.log("No ws"); return; }
-                         if (window.ws.readyState !== 1) { console.log("WS not open"); return; }
-                         if (!userVideo || userVideo.paused || userVideo.ended) { console.log("Video not playing"); return; }
-                         
-                         vCtx.drawImage(userVideo, 0, 0, vCanvas.width, vCanvas.height);
-                         var dataUrl = vCanvas.toDataURL('image/jpeg', 0.5);
-                         if (!dataUrl || dataUrl === 'data:,') return; // Canvas empty
-                         
-                         var base64Raw = dataUrl.split(',')[1];
-                         window.ws.send(JSON.stringify({ tipo: 'video', data: base64Raw }));
-                     } catch(err) {
-                         console.error("Frame capture error:", err);
-                     }
-                 }, 1500);
+                    try {
+                        if (!window.ws) return;
+                        if (window.ws.readyState !== 1) return;
+                        if (!userVideo || userVideo.paused || userVideo.ended) return;
+                        
+                        vCtx.drawImage(userVideo, 0, 0, vCanvas.width, vCanvas.height);
+                        var dataUrl = vCanvas.toDataURL('image/jpeg', 0.5);
+                        if (!dataUrl || dataUrl === 'data:,') return; // Canvas empty
+                        
+                        var base64Raw = dataUrl.split(',')[1];
+                        window.ws.send(JSON.stringify({ tipo: 'video', data: base64Raw }));
+                        
+                        if (!window.alertedFrame) {
+                            alert("✅ EXITO: Tu celular acaba de enviar el primer fotograma de video a la IA correctamente.");
+                            window.alertedFrame = true;
+                        }
+                    } catch(err) {
+                        if (!window.alertedErr) {
+                            alert("❌ ERROR DE CELULAR: " + err.message);
+                            window.alertedErr = true;
+                        }
+                    }
+                }, 1500);
              }
            }).catch(function(err) {
              clearTimeout(waitAlert);
