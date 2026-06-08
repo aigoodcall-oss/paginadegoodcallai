@@ -1410,24 +1410,76 @@ body.rainy-abierta .wsp-bubble{display:none!important}
 
   
     window.vozCamFacingMode = 'environment';
+  window.vozCurrentDeviceId = null;
   window.vozFlipCamera = function() {
-      if (window.vozCamFacingMode === 'user') {
-          window.vozCamFacingMode = 'environment';
-      } else {
-          window.vozCamFacingMode = 'user';
-      }
-      
-      var userVideo = document.getElementById('voz-user-video');
-      
-      // Stop old tracks and clear srcObject to avoid camera freezing on iOS
-      if (window.videoStream) {
-          window.videoStream.getTracks().forEach(function(track) { track.stop(); });
-      }
-      userVideo.srcObject = null;
-      
-      if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-         // Use "exact" for mobile browsers to force the switch
-         var constraints = { video: { facingMode: { exact: window.vozCamFacingMode } } };
+      navigator.mediaDevices.enumerateDevices().then(function(devices) {
+          var videoDevices = devices.filter(function(d) { return d.kind === 'videoinput'; });
+          if (videoDevices.length < 2) {
+              alert("No se detectó una segunda cámara física en este dispositivo.");
+              return;
+          }
+          
+          // Find the index of the current device, default to 0
+          var currentIndex = 0;
+          if (window.vozCurrentDeviceId) {
+              for (var i = 0; i < videoDevices.length; i++) {
+                  if (videoDevices[i].deviceId === window.vozCurrentDeviceId) {
+                      currentIndex = i;
+                      break;
+                  }
+              }
+          }
+          
+          // Move to next camera
+          var nextIndex = (currentIndex + 1) % videoDevices.length;
+          var newDeviceId = videoDevices[nextIndex].deviceId;
+          window.vozCurrentDeviceId = newDeviceId;
+          
+          var userVideo = document.getElementById('voz-user-video');
+          
+          // Stop current stream to free hardware lock
+          if (window.videoStream) {
+              window.videoStream.getTracks().forEach(function(t) { t.stop(); });
+          }
+          userVideo.srcObject = null;
+          
+          // Add a tiny delay to allow OS to release the camera hardware
+          setTimeout(function() {
+              navigator.mediaDevices.getUserMedia({ video: { deviceId: { exact: newDeviceId } } })
+              .then(function(stream) {
+                  window.videoStream = stream;
+                  userVideo.srcObject = stream;
+                  
+                  var label = videoDevices[nextIndex].label.toLowerCase();
+                  // Guess if it's a front camera to apply mirror effect
+                  if (label.indexOf('front') !== -1 || label.indexOf('frontal') !== -1 || label.indexOf('user') !== -1) {
+                      userVideo.style.transform = 'scaleX(-1)';
+                  } else if (label.indexOf('back') !== -1 || label.indexOf('rear') !== -1 || label.indexOf('environment') !== -1) {
+                      userVideo.style.transform = 'scaleX(1)';
+                  } else {
+                      // If no clear label, just alternate the mirror based on index
+                      if (nextIndex === 0) {
+                          userVideo.style.transform = 'scaleX(-1)';
+                      } else {
+                          userVideo.style.transform = 'scaleX(1)';
+                      }
+                  }
+                  
+                  userVideo.play().catch(function(e){});
+              }).catch(function(err){
+                  // Si falla el ID exacto, intentamos un fallback ciego a facingMode contrario
+                  window.vozCamFacingMode = (window.vozCamFacingMode === 'user') ? 'environment' : 'user';
+                  navigator.mediaDevices.getUserMedia({ video: { facingMode: { exact: window.vozCamFacingMode } } })
+                  .then(function(s2) {
+                      window.videoStream = s2;
+                      userVideo.srcObject = s2;
+                      userVideo.style.transform = (window.vozCamFacingMode === 'user') ? 'scaleX(-1)' : 'scaleX(1)';
+                      userVideo.play().catch(function(e){});
+                  });
+              });
+          }, 300);
+      });
+  };
          
          navigator.mediaDevices.getUserMedia(constraints)
          .catch(function(err) {
