@@ -1132,6 +1132,10 @@ body.rainy-abierta .wsp-bubble{display:none!important}
             <span id="voz-video-status-text" style="font-size:0.75rem; margin-top:16px; text-align:center; padding:0 10px;">Presiona para iniciar video</span>
           </div>
           <div id="voz-video-recording-dot" style="display:none; width:10px; height:10px; background:#ef4444; border-radius:50%; position:absolute; top:12px; right:12px; z-index:3; animation:pulse 1.5s infinite;"></div>
+          <!-- FLIP CAM BUTTON -->
+          <button id="voz-btn-flip-cam" onclick="vozFlipCamera()" style="position:absolute; bottom:12px; right:12px; z-index:4; background:rgba(0,0,0,0.5); border:none; color:white; border-radius:50%; width:36px; height:36px; cursor:pointer; display:none; align-items:center; justify-content:center;">
+             <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M12 4V1L8 5l4 4V6c3.31 0 6 2.69 6 6 0 1.01-.25 1.97-.7 2.8l1.46 1.46A7.93 7.93 0 0020 12c0-4.42-3.58-8-8-8zm0 14c-3.31 0-6-2.69-6-6 0-1.01.25-1.97.7-2.8L5.24 7.74A7.93 7.93 0 004 12c0 4.42 3.58 8 8 8v3l4-4-4-4v3z"/></svg>
+          </button>
         </div>
         <div id="voz-orb-wrap">
           <div id="voz-orb-glow"></div>
@@ -1405,6 +1409,39 @@ body.rainy-abierta .wsp-bubble{display:none!important}
   };
 
   
+    window.vozCamFacingMode = 'environment';
+  window.vozFlipCamera = function() {
+      if (window.vozCamFacingMode === 'user') {
+          window.vozCamFacingMode = 'environment';
+      } else {
+          window.vozCamFacingMode = 'user';
+      }
+      var userVideo = document.getElementById('voz-user-video');
+      if (window.videoStream) {
+          window.videoStream.getTracks().forEach(function(track) { track.stop(); });
+      }
+      if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+         navigator.mediaDevices.getUserMedia({ video: { facingMode: window.vozCamFacingMode } })
+         .then(function(stream) {
+             window.videoStream = stream;
+             userVideo.srcObject = stream;
+             if (window.vozCamFacingMode === 'user') {
+                 userVideo.style.transform = 'scaleX(-1)';
+             } else {
+                 userVideo.style.transform = 'scaleX(1)';
+             }
+             userVideo.play().catch(function(e){});
+         }).catch(function(err){
+             navigator.mediaDevices.getUserMedia({ video: true })
+             .then(function(stream) {
+                 window.videoStream = stream;
+                 userVideo.srcObject = stream;
+                 userVideo.play().catch(function(e){});
+             });
+         });
+      }
+  };
+
   window.vozToggleVideo = function() {
     var orbWrap = document.getElementById('voz-orb-wrap');
     var videoWrap = document.getElementById('voz-video-wrap');
@@ -1420,6 +1457,7 @@ body.rainy-abierta .wsp-bubble{display:none!important}
       // TURN ON VIDEO
       orbWrap.style.display = 'none';
       videoWrap.style.display = 'block';
+      videoMock.style.display = 'flex';
       iconCam.style.display = 'none';
       iconMic.style.display = 'block';
       
@@ -1444,7 +1482,7 @@ body.rainy-abierta .wsp-bubble{display:none!important}
 
       if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
          Promise.race([
-             navigator.mediaDevices.getUserMedia({ video: true }),
+             navigator.mediaDevices.getUserMedia({ video: { facingMode: window.vozCamFacingMode || 'environment' } }),
              timeoutPromise
          ]).then(function(stream) {
              clearTimeout(waitAlert);
@@ -1452,11 +1490,14 @@ body.rainy-abierta .wsp-bubble{display:none!important}
              userVideo.srcObject = stream;
              userVideo.style.display = 'block';
              
-             // Put the orb back now that video is streaming
-             videoMock.innerHTML = '<img src="logos/voz-orb.png" alt="" style="width:80px; height:80px; border-radius:50%; box-shadow:0 10px 32px rgba(99,102,241,.5); animation:vozFloat 3.2s ease-in-out infinite;">' +
-                                   '<span id="voz-video-status-text" style="font-size:0.75rem; margin-top:16px; text-align:center;">Transmisión a la IA activa</span>';
-             
-             videoMock.style.display = 'flex';
+             // Hide the mock completely when the camera is active
+             videoMock.style.display = 'none';
+             document.getElementById('voz-btn-flip-cam').style.display = 'flex';
+             if (window.vozCamFacingMode === 'user') {
+                 userVideo.style.transform = 'scaleX(-1)';
+             } else {
+                 userVideo.style.transform = 'scaleX(1)';
+             }
              recDot.style.display = 'block';
              estado.innerText = "Transmitiendo video a la IA";
              userVideo.play().catch(function(e){ console.log(e); });
@@ -1526,6 +1567,7 @@ body.rainy-abierta .wsp-bubble{display:none!important}
       userVideo.srcObject = null;
       
       videoWrap.style.display = 'none';
+      document.getElementById('voz-btn-flip-cam').style.display = 'none';
       orbWrap.style.display = 'flex';
       iconMic.style.display = 'none';
       iconCam.style.display = 'block';
