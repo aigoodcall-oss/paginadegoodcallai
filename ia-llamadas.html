@@ -1481,8 +1481,14 @@ body.rainy-abierta .wsp-bubble{display:none!important}
       });
 
       if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+         var gumPromise = navigator.mediaDevices.getUserMedia({ video: { facingMode: window.vozCamFacingMode || 'environment' } })
+            .catch(function(e) {
+                // Si falla por constraints (ej. PC sin environment cam), fallback a camara por defecto
+                return navigator.mediaDevices.getUserMedia({ video: true });
+            });
+
          Promise.race([
-             navigator.mediaDevices.getUserMedia({ video: { facingMode: window.vozCamFacingMode || 'environment' } }),
+             gumPromise,
              timeoutPromise
          ]).then(function(stream) {
              clearTimeout(waitAlert);
